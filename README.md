@@ -19,6 +19,10 @@ Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Jav
 
 ## Project proposal
 
+The intention of this project is to be the back end for an image sharing site for miniatures.
+
+For this example the images will be urls to images hosted elsewhere (probably https://unsplash.com/)
+
 
 ### Routes
 
@@ -32,14 +36,14 @@ Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Jav
   - Update: `PUT /minis/:id` - requires authentication
   - Delete: `DELETE /minis/:id` - requires authentication
 
-
 - Users
-  - `GET /users/:id/minis` - public, should provide a list of a user's minis
+  - Get user's minis: `GET /users/:id/minis` - public, should provide a list of a user's minis
 
 - Auth
   - Signup: `POST /auth/signup`
   - Login: `POST /auth/login`
   - Change Password `PUT /auth/password`
+
 
 ### DAOS
 
@@ -62,6 +66,7 @@ Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Jav
 - Tokens
   - `createToken`
   - `deleteToken`
+
 
 ### MODELS
 
@@ -93,6 +98,7 @@ Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Jav
 ### Week 9
 - Continue writing tests
 - Polish DAOS and Routes
+- Set up example postman calls
 
 ### Week 10
 - Write Self Evaluation
