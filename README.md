@@ -37,7 +37,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - Delete: `DELETE /minis/:id` - requires authentication
 
 - Users
-  - Get user's minis: `GET /users/:id/minis` - public, should provide a list of a user's minis
+  - Get user's minis: `GET /users/:username/minis` - public, should provide a list of a user's minis
 
 - Auth
   - Signup: `POST /auth/signup`
@@ -71,8 +71,10 @@ For this example the images will be urls to images hosted elsewhere (probably ht
 ### MODELS
 
 - User
-  - `password`
-  - `roles`: [String]
+  - `username`: string, index, unique
+  - `email`: string, index, unique
+  - `password`: string, encrypt
+  - `roles`: [string]
 - Image
   - `image`: string
   - `userId`
