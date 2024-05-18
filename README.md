@@ -61,7 +61,8 @@ For this example the images will be urls to images hosted elsewhere (probably ht
 - Users
   - `createUser`
   - `updateUser`
-  - `getUserById`
+  - `findUserByUsername`
+  - `findUserByEmail`
 
 - Tokens
   - `createToken`
@@ -80,6 +81,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - `userId`
 - Token
   - `userId`
+  - `token`
 - Mini
   - `userId`
   - `images`: [Image]
