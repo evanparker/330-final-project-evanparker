@@ -14,8 +14,7 @@ module.exports.isLoggedIn = async (req, res, next) => {
       req.userId = userId;
       next();
     } else {
-      res.status(401);
-      res.json();
+      res.sendStatus(401);
     }
 
   } catch (e) {

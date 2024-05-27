@@ -11,6 +11,10 @@ module.exports.getImageById = async ( id ) => {
   return await Image.findOne({_id: id});
 }
 
+module.exports.getImagesByIds = async ( ids ) => {
+  return await Image.find({_id: {$in: ids}});
+}
+
 module.exports.getImagesByUserId = async ( userId ) => {
   // todo: pagination
   return await Image.find({userId});
