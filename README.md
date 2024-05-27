@@ -1,6 +1,17 @@
 # 330-final-project-evanparker
 Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Javascript
 
+## Week 8 Status
+
+The server is currently running locally and I can make requests through postman.
+
+- Completed:
+  - Auth/Token routes and tests
+  - Image routes ant tests
+  - Minis post route and tests
+- TODO:
+  - Add some role tests to auth
+  - Finish other Minis routes and tests
 
 ## Requirements
 
