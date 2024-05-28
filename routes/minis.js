@@ -16,7 +16,6 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const minis = await MiniDAO.getMiniById(req.params.id);
-    console.log(minis);
     res.json(minis[0]);
   } catch (e) {
     next(e);

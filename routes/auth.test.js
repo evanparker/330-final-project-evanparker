@@ -63,7 +63,10 @@ describe("/auth", () => {
       it("should return 200 with a password", async () => {
         const res = await request(server).post("/auth/signup").send(user1);
         expect(res.statusCode).toEqual(200);
-        // TODO: test matching object
+        expect(res.body).toMatchObject({
+          email: "user1@mail.com",
+          username: "user1"
+        });
       });
       it("should return 409 Conflict with a repeat signup", async () => {
         let res = await request(server).post("/auth/signup").send(user0);

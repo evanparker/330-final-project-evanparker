@@ -13,7 +13,8 @@ router.post('/signup', async (req, res, next) => {
       const user = await UserDAO.createUser({
         password: hashedPassword,
         email,
-        username
+        username,
+        roles: ['user']
       });
       res.json(user);
     } else {
