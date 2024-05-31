@@ -1,11 +1,11 @@
-const TokenDAO = require('../daos/token');
+const TokenDAO = require("../daos/token");
 
 module.exports = {};
 
 module.exports.isLoggedIn = async (req, res, next) => {
   try {
     let tokenString = req.headers.authorization;
-    if (typeof tokenString === 'string') {
+    if (typeof tokenString === "string") {
       tokenString = tokenString.slice(7); // "remove 'Bearer '"
       req.tokenString = tokenString;
     }
@@ -16,9 +16,7 @@ module.exports.isLoggedIn = async (req, res, next) => {
     } else {
       res.sendStatus(401);
     }
-
   } catch (e) {
     next(e);
   }
-
-}
+};

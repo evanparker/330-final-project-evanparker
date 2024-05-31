@@ -1,4 +1,5 @@
 # 330-final-project-evanparker
+
 Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Javascript
 
 ## Week 8 Status
@@ -27,20 +28,20 @@ The server is currently running locally and I can make requests through postman.
     - A saved Postman collection
     - A very simple front-end project
 
-
 ## Project proposal
 
 The intention of this project is to be the back end for an image sharing site for miniatures.
 
 For this example the images will be urls to images hosted elsewhere (probably https://unsplash.com/)
 
-
 ### Routes
 
 - Images
+
   - Create: `POST /images`
 
 - Minis
+
   - Get all: `GET /minis` - public, should not include images
   - Get one: `GET /minis/:id` - public, should include images as objects
   - Create: `POST /minis` - requires authentication
@@ -48,6 +49,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - Delete: `DELETE /minis/:id` - requires authentication
 
 - Users
+
   - Get user's minis: `GET /users/:username/minis` - public, should provide a list of a user's minis
 
 - Auth
@@ -55,13 +57,14 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - Login: `POST /auth/login`
   - Change Password `PUT /auth/password`
 
-
 ### DAOS
 
 - Images
+
   - `createImage`
 
 - Minis
+
   - `getAllMinis`
   - `getMiniById`
   - `getMinisByUserId`
@@ -70,6 +73,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - `deleteMini`
 
 - Users
+
   - `createUser`
   - `updateUser`
   - `findUserByUsername`
@@ -78,7 +82,6 @@ For this example the images will be urls to images hosted elsewhere (probably ht
 - Tokens
   - `createToken`
   - `deleteToken`
-
 
 ### MODELS
 
@@ -97,29 +100,31 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - `userId`
   - `images`: [Image]
 
-
 ## Task breakdown and timeline
 
 ### Week 7
+
 - Implement Models
 - Implement DAOS
 
 ### Week 8
+
 - Implement Routes
 - Set up deployment
 - Start writing tests for routes
 - **DUE**: Prototype/proof of concept
 
 ### Week 9
+
 - Continue writing tests
 - Polish DAOS and Routes
 - Set up example postman calls
 
 ### Week 10
+
 - Write Self Evaluation
 - **DUE**: Project submission, presentations
   - ~5-8 minute presentation with slides and a demo.
   - Your project README should have a self-evaluation of your approach and results, what you learned, and what you would like to do differently or improve upon. Explain what worked well and what didn't. The expectation is that this will not be a brief statement.
-
 
 ## Self Evaluation

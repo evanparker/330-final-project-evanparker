@@ -1,10 +1,11 @@
 const { Router } = require("express");
 const router = Router();
-const MiniDAO = require( '../daos/mini' );
-const ImageDAO = require( '../daos/image' );
+const MiniDAO = require("../daos/mini");
+const ImageDAO = require("../daos/image");
+const UserDAO = require("../daos/user");
 const { isLoggedIn } = require("./middleware");
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const minis = await MiniDAO.getAllMinis();
     res.json(minis);
@@ -13,7 +14,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const minis = await MiniDAO.getMiniById(req.params.id);
     res.json(minis[0]);
@@ -22,7 +23,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post("/", isLoggedIn, async (req, res, next) => {
   try {
     const imageIds = req.body.images;
     const images = await ImageDAO.getImagesByIds(imageIds);
@@ -41,19 +42,38 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.put('/:id', isLoggedIn, async (req, res, next) => {
+router.put("/:id", isLoggedIn, async (req, res, next) => {
   try {
-    const mini = await MiniDAO.updateMini(req.params.id, req.body);
-    res.json(mini);
+    const mini = (await MiniDAO.getMiniById(req.params.id))[0];
+    const user = await UserDAO.findUserById(req.userId);
+    if (
+      !user.roles.includes("admin") &&
+      mini.userId.toString() !== req.userId.toString()
+    ) {
+      res.sendStatus(401);
+      return;
+    }
+    const updatedMini = await MiniDAO.updateMini(req.params.id, req.body);
+    res.json(updatedMini);
   } catch (e) {
     next(e);
   }
 });
 
-router.delete('/', isLoggedIn, async (req, res, next) => {
+router.delete("/:id", isLoggedIn, async (req, res, next) => {
   try {
-    const mini = await MiniDAO.deleteMini(req.params.id);
-    res.json(mini);
+    const mini = (await MiniDAO.getMiniById(req.params.id))[0];
+    const user = await UserDAO.findUserById(req.userId);
+    if (
+      !user.roles.includes("admin") &&
+      mini.userId.toString() !== req.userId.toString()
+    ) {
+      res.sendStatus(401);
+      return;
+    }
+
+    const deletedMini = await MiniDAO.deleteMini(req.params.id);
+    res.json(deletedMini);
   } catch (e) {
     next(e);
   }

@@ -12,8 +12,8 @@ describe("/images", () => {
 
   afterEach(testUtils.clearDB);
 
-  const image0 = { image: "http://example.com/image1.jpg" }
-  const image1 = { image: "http://example.com/image2.jpg" }
+  const image0 = { image: "http://example.com/image1.jpg" };
+  const image1 = { image: "http://example.com/image2.jpg" };
 
   describe("Before login", () => {
     describe("POST /", () => {
@@ -35,12 +35,12 @@ describe("/images", () => {
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
-      password: "123password",
+      password: "123password"
     };
     const user1 = {
       email: "user1@mail.com",
       username: "user1",
-      password: "456password",
+      password: "456password"
     };
     let token0;
     let token1;
@@ -88,4 +88,4 @@ describe("/images", () => {
       });
     });
   });
-})
+});

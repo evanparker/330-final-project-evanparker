@@ -1,20 +1,20 @@
 const { Router } = require("express");
 const router = Router();
-const UserDAO = require( '../daos/user' );
-const TokenDAO = require( '../daos/token' );
-const bcrypt = require( 'bcrypt' );
+const UserDAO = require("../daos/user");
+const TokenDAO = require("../daos/token");
+const bcrypt = require("bcrypt");
 const { isLoggedIn } = require("./middleware");
 
-router.post('/signup', async (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   try {
     let { password, email, username } = req.body;
-    if ( password && email && username ) {
+    if (password && email && username) {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await UserDAO.createUser({
         password: hashedPassword,
         email,
         username,
-        roles: ['user']
+        roles: ["user"]
       });
       res.json(user);
     } else {
@@ -30,7 +30,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
   try {
     let { password, email } = req.body;
     if (!password) {
@@ -58,41 +58,34 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.put('/password',
-  isLoggedIn,
-  async (req, res, next) => {
-    try {
-      let { password } = req.body;
-      let userId = req.userId;
-      if (!password) {
-        res.status(400);
-        res.json();
-        return;
-      }
-      const hashedPassword = await bcrypt.hash(password, 5);
-      const updatedUser = UserDAO.updateUserPassword(userId, hashedPassword);
-      res.json(updatedUser);
-
-    } catch (e) {
-      next(e);
+router.put("/password", isLoggedIn, async (req, res, next) => {
+  try {
+    let { password } = req.body;
+    let userId = req.userId;
+    if (!password) {
+      res.status(400);
+      res.json();
+      return;
     }
+    const hashedPassword = await bcrypt.hash(password, 5);
+    const updatedUser = UserDAO.updateUserPassword(userId, hashedPassword);
+    res.json(updatedUser);
+  } catch (e) {
+    next(e);
   }
-);
+});
 
-router.post('/logout',
-  isLoggedIn,
-  async (req, res, next) => {
-    try {
-      const token = await TokenDAO.removeToken(req.tokenString);
-      if (token) {
-        res.json(token);
-      } else {
-        res.sendStatus(404);
-      }
-    } catch (e) {
-      next(e);
+router.post("/logout", isLoggedIn, async (req, res, next) => {
+  try {
+    const token = await TokenDAO.removeToken(req.tokenString);
+    if (token) {
+      res.json(token);
+    } else {
+      res.sendStatus(404);
     }
+  } catch (e) {
+    next(e);
   }
-);
+});
 
 module.exports = router;

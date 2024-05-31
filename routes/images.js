@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const router = Router();
-const ImageDAO = require( '../daos/image' );
+const ImageDAO = require("../daos/image");
 const { isLoggedIn } = require("./middleware");
 
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post("/", isLoggedIn, async (req, res, next) => {
   try {
-    const imageObj = {...req.body, userId: req.userId};
+    const imageObj = { ...req.body, userId: req.userId };
     const image = await ImageDAO.createImage(imageObj);
     res.json(image);
   } catch (e) {

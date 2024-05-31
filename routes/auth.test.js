@@ -14,12 +14,12 @@ describe("/auth", () => {
   const user0 = {
     email: "user0@mail.com",
     username: "user0",
-    password: "123password",
+    password: "123password"
   };
   const user1 = {
     email: "user1@mail.com",
     username: "user1",
-    password: "456password",
+    password: "456password"
   };
 
   describe("before signup", () => {
@@ -49,14 +49,14 @@ describe("/auth", () => {
     describe("POST /signup", () => {
       it("should return 400 without a password", async () => {
         const res = await request(server).post("/auth/signup").send({
-          email: user0.email,
+          email: user0.email
         });
         expect(res.statusCode).toEqual(400);
       });
       it("should return 400 with empty password", async () => {
         const res = await request(server).post("/auth/signup").send({
           email: user1.email,
-          password: "",
+          password: ""
         });
         expect(res.statusCode).toEqual(400);
       });
@@ -93,14 +93,14 @@ describe("/auth", () => {
     describe("POST /", () => {
       it("should return 400 when password isn't provided", async () => {
         const res = await request(server).post("/auth/login").send({
-          email: user.email,
+          email: user.email
         });
         expect(res.statusCode).toEqual(400);
       });
       it("should return 401 when password doesn't match", async () => {
         const res = await request(server).post("/auth/login").send({
           email: user.email,
-          password: "123",
+          password: "123"
         });
         expect(res.statusCode).toEqual(401);
       });
@@ -156,7 +156,7 @@ describe("/auth", () => {
         expect(loginRes0.statusCode).toEqual(401);
         loginRes0 = await request(server).post("/auth/login").send({
           email: user0.email,
-          password: "123",
+          password: "123"
         });
         expect(loginRes0.statusCode).toEqual(200);
         const loginRes1 = await request(server).post("/auth/login").send(user1);
@@ -174,7 +174,7 @@ describe("/auth", () => {
         expect(loginRes1.statusCode).toEqual(401);
         loginRes1 = await request(server).post("/auth/login").send({
           email: user1.email,
-          password: "123",
+          password: "123"
         });
         expect(loginRes1.statusCode).toEqual(200);
       });
