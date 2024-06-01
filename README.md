@@ -2,6 +2,11 @@
 
 Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Javascript
 
+
+## Coverage
+![image](https://github.com/evanparker/330-final-project-evanparker/assets/565813/64552546-7a63-4a94-8fed-387d48eeb6ca)
+
+
 ## Week 8 Status
 
 The server is currently running locally and I can make requests through postman.
