@@ -67,8 +67,11 @@ router.put("/password", isLoggedIn, async (req, res, next) => {
       res.json();
       return;
     }
-    const hashedPassword = await bcrypt.hash(password, 5);
-    const updatedUser = UserDAO.updateUserPassword(userId, hashedPassword);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedUser = await UserDAO.updateUserPassword(
+      userId,
+      hashedPassword
+    );
     res.json(updatedUser);
   } catch (e) {
     next(e);
