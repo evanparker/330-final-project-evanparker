@@ -17,4 +17,12 @@ router.post("/", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get("/", async (req, res, next) => {
+  try {
+    const images = await ImageDAO.getAllImages();
+    res.json(images);
+  } catch (e) {
+    next(e);
+  }
+});
 module.exports = router;

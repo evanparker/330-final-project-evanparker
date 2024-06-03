@@ -44,10 +44,12 @@ describe("/images", () => {
     };
     let token0;
     let token1;
+    let userId0;
     beforeEach(async () => {
-      await request(server).post("/auth/signup").send(user0);
+      const signupRes = await request(server).post("/auth/signup").send(user0);
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
+      userId0 = signupRes.body._id;
       await request(server).post("/auth/signup").send(user1);
       const res1 = await request(server).post("/auth/login").send(user1);
       token1 = res1.body.token;
@@ -85,6 +87,19 @@ describe("/images", () => {
           .set("Authorization", "Bearer " + token1)
           .send({});
         expect(res.statusCode).toEqual(400);
+      });
+    });
+    describe("GET /", () => {
+      it("should send 200 and all the stored images", async () => {
+        const res = await request(server).get("/images");
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toEqual([]);
+        await Image.create({ ...image0, userId: userId0 });
+        await Image.create({ ...image1, userId: userId0 });
+        const res1 = await request(server).get("/images");
+        expect(res1.statusCode).toEqual(200);
+        expect(res1.body[0]).toMatchObject({ ...image0, userId: userId0 });
+        expect(res1.body[1]).toMatchObject({ ...image1, userId: userId0 });
       });
     });
   });
