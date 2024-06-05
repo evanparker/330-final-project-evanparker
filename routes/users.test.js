@@ -53,10 +53,16 @@ describe("/minis", () => {
   describe("GET /:id/minis", () => {
     it("should return 200 and all a user's minis", async () => {
       const res = await request(server)
-        .get("/users/" + user._id + "/minis")
+        .get("/users/" + user.username + "/minis")
         .send();
       expect(res.statusCode).toEqual(200);
       expect(res.body.length).toBe(3);
+    });
+    it("should return 404 for a bad id", async () => {
+      const res = await request(server)
+        .get("/users/" + "nouser" + "/minis")
+        .send();
+      expect(res.statusCode).toEqual(404);
     });
   });
 });

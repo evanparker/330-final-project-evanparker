@@ -2,10 +2,13 @@
 
 Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Javascript
 
+## Self Assessment
+
+> Your project README should have a self-evaluation of your approach and results, what you learned, and what you would like to do differently or improve upon. Explain what worked well and what didn't. The expectation is that this will not be a brief statement.
 
 ## Coverage
-![image](https://github.com/evanparker/330-final-project-evanparker/assets/565813/64552546-7a63-4a94-8fed-387d48eeb6ca)
 
+![image](https://github.com/evanparker/330-final-project-evanparker/assets/565813/64552546-7a63-4a94-8fed-387d48eeb6ca)
 
 ## Week 8 Status
 
@@ -43,7 +46,8 @@ For this example the images will be urls to images hosted elsewhere (probably ht
 
 - Images
 
-  - Create: `POST /images`
+  - Create: `POST /images` - requires authentication
+  - Get all: `GET /images` - public
 
 - Minis
 
@@ -60,7 +64,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
 - Auth
   - Signup: `POST /auth/signup`
   - Login: `POST /auth/login`
-  - Change Password `PUT /auth/password`
+  - Change Password `PUT /auth/password` - requires authentication
 
 ### DAOS
 
@@ -85,6 +89,7 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - `findUserByEmail`
 
 - Tokens
+
   - `createToken`
   - `deleteToken`
 
