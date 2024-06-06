@@ -4,7 +4,15 @@ Final Project for JSCRIPT 330 B Sp 24: Back-End Application Development With Jav
 
 ## Self Assessment
 
-> Your project README should have a self-evaluation of your approach and results, what you learned, and what you would like to do differently or improve upon. Explain what worked well and what didn't. The expectation is that this will not be a brief statement.
+### What went well:
+
+Tried test driven development for the minis routes, and once I got the advice to do one route at a time it went pretty smootly. Having the milestone in the middle of the project helped keep me on schedule.
+
+### What didn't go well:
+
+The project is pretty bare bones, and to be useful would need a few more optional fields added to the minis/images models. I feel never really learned _how_ to plan more complicated schemas, and some tools/references for visualizing them would have been useful.
+
+There's still a lot of work to do to make this into a usable project. Ideally there'd be models for manufacturers, figures (and collections of figures), and paintjobs. I'd also like to find and efficent way to serve the first image of a mini for thumnbail purposes when getting multiple minis at once.
 
 ## Coverage
 
