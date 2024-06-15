@@ -1,4 +1,5 @@
 const TokenDAO = require("../daos/token");
+const UserDAO = require("../daos/user");
 
 module.exports = {};
 
@@ -15,6 +16,21 @@ module.exports.isLoggedIn = async (req, res, next) => {
       next();
     } else {
       res.sendStatus(401);
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.isAdmin = async (req, res, next) => {
+  try {
+    const user = await UserDAO.findUserById(req.userId);
+    if (user.roles.includes("admin")) {
+      next();
+      return true;
+    } else {
+      res.sendStatus(403);
+      return false;
     }
   } catch (e) {
     next(e);

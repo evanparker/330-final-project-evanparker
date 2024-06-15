@@ -14,41 +14,9 @@ The project is pretty bare bones, and to be useful would need a few more optiona
 
 There's still a lot of work to do to make this into a usable project. Ideally there'd be models for manufacturers, figures (and collections of figures), and paintjobs. I'd also like to find and efficent way to serve the first image of a mini for thumnbail purposes when getting multiple minis at once.
 
-## Coverage
-
-![image](https://github.com/evanparker/330-final-project-evanparker/assets/565813/64552546-7a63-4a94-8fed-387d48eeb6ca)
-
-## Week 8 Status
-
-The server is currently running locally and I can make requests through postman.
-
-- Completed:
-  - Auth/Token routes and tests
-  - Image routes ant tests
-  - Minis post route and tests
-- TODO:
-  - Add some role tests to auth
-  - Finish other Minis routes and tests
-
-## Requirements
-
-- Your project will require an Express API using:
-  - Authentication and Authorization
-  - 2 sets of CRUD routes (not counting authentication)
-  - Indexes for performance and uniqueness when reasonable
-  - At least one of text search, aggregations, and lookups
-- You may use external data providers (APIs) if you can get yourself free trial/tier access
-- Routes should be fully tested (project test coverage > 80%)
-- You’ll demo your project to the class in week 10 (5 minutes)
-  - Demonstrate how to interact with your API through either
-    - A saved Postman collection
-    - A very simple front-end project
-
 ## Project proposal
 
 The intention of this project is to be the back end for an image sharing site for miniatures.
-
-For this example the images will be urls to images hosted elsewhere (probably https://unsplash.com/)
 
 ### Routes
 
@@ -64,6 +32,22 @@ For this example the images will be urls to images hosted elsewhere (probably ht
   - Create: `POST /minis` - requires authentication
   - Update: `PUT /minis/:id` - requires authentication
   - Delete: `DELETE /minis/:id` - requires authentication
+
+- Figures
+
+  - get all: `GET /figures`
+  - get one: `GET /figures/:id`
+  - create: `GET /figures/:id` - requires authentication
+  - update: `GET /figures/:id` - requires authentication
+  - Delete: `DELETE /figures/:id` - requires admin
+
+- Manufacturers
+
+  - get all: `GET /manufacturers`
+  - get one: `GET /manufacturers/:id`
+  - create: `POST /manufacturers` - requires admin
+  - update: `PUT /manufacturers` - requires admin
+  - Delete: `DELETE /manufacturers/:id` - requires admin
 
 - Users
 

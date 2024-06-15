@@ -3,7 +3,9 @@ const models = [
   require("./models/user"),
   require("./models/image"),
   require("./models/token"),
-  require("./models/mini")
+  require("./models/mini"),
+  require("./models/manufacturer"),
+  require("./models/figure")
 ];
 
 module.exports = {};

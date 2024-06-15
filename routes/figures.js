@@ -1,0 +1,49 @@
+const { Router } = require("express");
+const router = Router();
+const MiniDAO = require("../daos/mini");
+const FigureDAO = require("../daos/figure");
+const ImageDAO = require("../daos/image");
+const UserDAO = require("../daos/user");
+const { isLoggedIn, isAdmin } = require("./middleware");
+
+router.get("/", async (req, res, next) => {
+  try {
+    const figures = await FigureDAO.getAllFigures();
+    res.json(figures);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const figure = await FigureDAO.getFigureById(req.params.id);
+    res.json(figure);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post("/", isLoggedIn, isAdmin, async (req, res, next) => {
+  try {
+    const figure = await FigureDAO.createFigure(req.body);
+    res.json(figure);
+  } catch (e) {
+    if (e.message.includes("validation failed")) {
+      res.sendStatus(400);
+    } else {
+      next(e);
+    }
+  }
+});
+
+router.put("/:id", isLoggedIn, isAdmin, async (req, res, next) => {
+  try {
+    const updatedFigure = await FigureDAO.updateFigure(req.params.id, req.body);
+    res.json(updatedFigure);
+  } catch (e) {
+    next(e);
+  }
+});
+
+module.exports = router;
