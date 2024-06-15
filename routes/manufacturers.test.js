@@ -193,7 +193,7 @@ describe("/manufacturers", () => {
         expect(res.statusCode).toEqual(403);
       });
 
-      it("should update a mini when admin", async () => {
+      it("should update a manufacturer when admin", async () => {
         let storedManufacturer = await testUtils.findOne(Manufacturer, {});
         const res = await request(server)
           .put("/manufacturers/" + storedManufacturer._id)
