@@ -24,6 +24,7 @@ module.exports.getMiniById = async (id) => {
     {
       $group: {
         _id: "$_id",
+        name: { $first: "$name" },
         userId: { $first: "$userId" },
         images: { $push: "$images" }
       }
@@ -41,7 +42,7 @@ module.exports.createMini = async (miniObj) => {
 };
 
 module.exports.updateMini = async (id, miniObj) => {
-  return await Mini.findOneAndUpdate({ _id: id }, miniObj);
+  return await Mini.findOneAndUpdate({ _id: id }, miniObj, { new: true });
 };
 
 module.exports.deleteMini = async (id) => {
