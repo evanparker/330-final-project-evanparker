@@ -44,7 +44,7 @@ module.exports.createManufacturer = async (obj) => {
 };
 
 module.exports.updateManufacturer = async (id, obj) => {
-  return await Manufacturer.updateOne({ _id: id }, obj);
+  return await Manufacturer.updateOne({ _id: id }, obj, { new: true });
 };
 
 module.exports.deleteManufacturer = async (id) => {

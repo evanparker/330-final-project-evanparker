@@ -19,5 +19,9 @@ module.exports.findUserById = async (_id) => {
 };
 
 module.exports.updateUserPassword = async (userId, password) => {
-  return await User.findOneAndUpdate({ _id: userId }, { password });
+  return await User.findOneAndUpdate(
+    { _id: userId },
+    { password },
+    { new: true }
+  );
 };

@@ -60,7 +60,7 @@ module.exports.createFigure = async (obj) => {
 };
 
 module.exports.updateFigure = async (id, obj) => {
-  return await Figure.updateOne({ _id: id }, obj);
+  return await Figure.updateOne({ _id: id }, obj, { new: true });
 };
 
 module.exports.deleteFigure = async (id) => {
