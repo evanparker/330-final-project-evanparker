@@ -12,8 +12,14 @@ describe("/images", () => {
 
   afterEach(testUtils.clearDB);
 
-  const image0 = { image: "http://example.com/image1.jpg" };
-  const image1 = { image: "http://example.com/image2.jpg" };
+  const image0 = {
+    cloudinaryCloudName: "ddl3gn9nh",
+    cloudinaryPublicId: "t1lqquh8o8pdnnaouphl"
+  };
+  const image1 = {
+    cloudinaryCloudName: "ddl3gn9nh",
+    cloudinaryPublicId: "zufzijos4ca2p5dpuxsu"
+  };
 
   describe("Before login", () => {
     describe("POST /", () => {

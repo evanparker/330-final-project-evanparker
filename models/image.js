@@ -6,7 +6,8 @@ const imageSchema = new mongoose.Schema({
     ref: "users",
     required: true
   },
-  image: { type: String, required: true }
+  cloudinaryCloudName: { type: String, required: true },
+  cloudinaryPublicId: { type: String, required: true }
 });
 
 module.exports = mongoose.model("images", imageSchema);
