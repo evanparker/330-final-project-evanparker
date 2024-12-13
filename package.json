@@ -8,7 +8,7 @@
     "tdd": "jest --watch --runInBand"
   },
   "engines": {
-    "node": "18.x"
+    "node": "23.x"
   },
   "jest": {
     "testEnvironment": "node",
