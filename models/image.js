@@ -6,7 +6,6 @@ const imageSchema = new mongoose.Schema({
     ref: "users",
     required: true
   },
-  cloudinaryCloudName: { type: String, required: true },
   cloudinaryPublicId: { type: String, required: true }
 });
 

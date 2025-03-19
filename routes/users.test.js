@@ -25,11 +25,9 @@ describe("/minis", () => {
   };
 
   const image0 = {
-    cloudinaryCloudName: "ddl3gn9nh",
     cloudinaryPublicId: "t1lqquh8o8pdnnaouphl"
   };
   const image1 = {
-    cloudinaryCloudName: "ddl3gn9nh",
     cloudinaryPublicId: "zufzijos4ca2p5dpuxsu"
   };
   let images;
