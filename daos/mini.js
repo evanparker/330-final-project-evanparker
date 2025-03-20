@@ -9,7 +9,7 @@ module.exports.getAllMinis = async () => {
 };
 
 module.exports.getMiniById = async (id) => {
-  return await Mini.aggregate([
+  let mini = await Mini.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(id) } },
     { $unwind: { path: "$images" } },
     {
@@ -30,6 +30,10 @@ module.exports.getMiniById = async (id) => {
       }
     }
   ]);
+  if (mini.length === 0) {
+    mini = await Mini.find({ _id: new mongoose.Types.ObjectId(id)})
+  }
+  return mini;
 };
 
 module.exports.getMinisByUserId = async (userId) => {

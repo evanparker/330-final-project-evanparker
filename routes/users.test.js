@@ -24,8 +24,12 @@ describe("/minis", () => {
     password: "777password"
   };
 
-  const image0 = { image: "http://example.com/image0.jpg" };
-  const image1 = { image: "http://example.com/image1.jpg" };
+  const image0 = {
+    cloudinaryPublicId: "t1lqquh8o8pdnnaouphl"
+  };
+  const image1 = {
+    cloudinaryPublicId: "zufzijos4ca2p5dpuxsu"
+  };
   let images;
   let user, user1;
   let minis = [];

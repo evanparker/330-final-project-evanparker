@@ -65,8 +65,8 @@ router.delete("/:id", isLoggedIn, async (req, res, next) => {
     const mini = (await MiniDAO.getMiniById(req.params.id))[0];
     const user = await UserDAO.findUserById(req.userId);
     if (
-      !user.roles.includes("admin") &&
-      mini.userId.toString() !== req.userId.toString()
+      !user?.roles?.includes("admin") &&
+      mini?.userId.toString() !== req.userId.toString()
     ) {
       res.sendStatus(401);
       return;

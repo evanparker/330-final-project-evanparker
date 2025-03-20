@@ -19,8 +19,12 @@ describe("/minis", () => {
     password: "999password"
   };
 
-  const image0 = { image: "http://example.com/image0.jpg" };
-  const image1 = { image: "http://example.com/image1.jpg" };
+  const image0 = {
+    cloudinaryPublicId: "t1lqquh8o8pdnnaouphl"
+  };
+  const image1 = {
+    cloudinaryPublicId: "zufzijos4ca2p5dpuxsu"
+  };
   let images;
   let user;
   let exampleMini;
@@ -156,6 +160,18 @@ describe("/minis", () => {
         const storedMini = await Mini.findOne().lean();
         expect(storedMini).toBeNull();
       });
+      it("should send 200 to normal user and create mini (without images)", async () => {
+        const res = await request(server)
+          .post("/minis")
+          .set("Authorization", "Bearer " + token0)
+          .send({name: "example", images: []});
+        expect(res.statusCode).toEqual(200);
+        const storedMini = await Mini.findOne().lean();
+        expect(storedMini).toMatchObject({
+          name: "example",
+          userId: (await User.findOne({ email: user0.email }).lean())._id
+        });
+      });
     });
 
     describe("GET /:id", () => {
@@ -171,6 +187,11 @@ describe("/minis", () => {
           .set("Authorization", "Bearer " + adminToken)
           .send({ images: [images[0]].map((i) => i._id) });
         mini1Id = res1.body._id;
+        const res2 = await request(server)
+          .post("/minis")
+          .set("Authorization", "Bearer " + token0)
+          .send({ images: [] });
+        mini2Id = res2.body._id;
       });
       it("should send 200 for a mini", async () => {
         const res = await request(server)
@@ -179,6 +200,16 @@ describe("/minis", () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject({
           images: [image0, image1],
+          userId: (await User.findOne({ email: user0.email }))._id.toString()
+        });
+      });
+      it("should send 200 for a mini without images", async () => {
+        const res = await request(server)
+          .get("/minis/" + mini2Id)
+          .send();
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject({
+          images: [],
           userId: (await User.findOne({ email: user0.email }))._id.toString()
         });
       });
