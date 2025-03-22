@@ -10,7 +10,12 @@ router.get("/:username/minis", async (req, res, next) => {
       res.sendStatus(404);
       return;
     }
-    const minis = await MiniDAO.getMinisByUserId(user._id);
+    let minis;
+    if (req.query.thumbnails) {
+      minis = await MiniDAO.getMinisByUserIdWithThumbnails(user._id);
+    } else {
+      minis = await MiniDAO.getMinisByUserId(user._id);
+    }
     res.json(minis);
   } catch (e) {
     next(e);

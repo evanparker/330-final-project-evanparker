@@ -16,6 +16,7 @@ The intention of this project is to be the back end for an image sharing site fo
 - Minis
 
   - Get all: `GET /minis` - public, should not include images
+  - Get all: `GET /minis?thumbnails=true` - include the first image for each mini
   - Get one: `GET /minis/:id` - public, should include images as objects
   - Create: `POST /minis` - requires authentication
   - Update: `PUT /minis/:id` - requires authentication
