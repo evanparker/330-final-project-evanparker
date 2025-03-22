@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Mini = require("../models/mini");
+const Image = require("../models/image");
 
 module.exports = {};
 
@@ -9,30 +10,9 @@ module.exports.getAllMinis = async () => {
 };
 
 module.exports.getMiniById = async (id) => {
-  let mini = await Mini.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
-    { $unwind: { path: "$images" } },
-    {
-      $lookup: {
-        from: "images",
-        localField: "images",
-        foreignField: "_id",
-        as: "images"
-      }
-    },
-    { $unwind: { path: "$images" } },
-    {
-      $group: {
-        _id: "$_id",
-        name: { $first: "$name" },
-        userId: { $first: "$userId" },
-        images: { $push: "$images" }
-      }
-    }
-  ]);
-  if (mini.length === 0) {
-    mini = await Mini.find({ _id: new mongoose.Types.ObjectId(id)})
-  }
+  let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) });
+  const images = await Image.find({ _id: { $in: mini.images.map(i=>i.toString()) } });
+  mini.images = images;
   return mini;
 };
 
