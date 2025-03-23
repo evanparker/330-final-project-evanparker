@@ -5,7 +5,8 @@ const models = [
   require("./models/token"),
   require("./models/mini"),
   require("./models/manufacturer"),
-  require("./models/figure")
+  require("./models/figure"),
+  require("./models/invite")
 ];
 
 module.exports = {};

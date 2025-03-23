@@ -2,13 +2,15 @@ const { Router } = require("express");
 const router = Router();
 const UserDAO = require("../daos/user");
 const TokenDAO = require("../daos/token");
+const InviteDAO = require("../daos/invite");
 const bcrypt = require("bcrypt");
 const { isLoggedIn } = require("./middleware");
 
 router.post("/signup", async (req, res, next) => {
   try {
-    let { password, email, username } = req.body;
-    if (password && email && username) {
+    let { password, email, username, invite } = req.body;
+    const inviteObj = await InviteDAO.getInviteByCode(invite);
+    if (password && email && username && inviteObj) {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await UserDAO.createUser({
         password: hashedPassword,
@@ -16,6 +18,7 @@ router.post("/signup", async (req, res, next) => {
         username,
         roles: ["user"]
       });
+      await InviteDAO.deleteInvite(invite);
       res.json(user);
     } else {
       res.sendStatus(400);

@@ -5,6 +5,7 @@ const testUtils = require("../test-utils");
 
 const User = require("../models/user");
 const Image = require("../models/image");
+const Invite = require("../models/invite");
 
 describe("/images", () => {
   beforeAll(testUtils.connectDB);
@@ -36,6 +37,12 @@ describe("/images", () => {
   });
 
   describe("after login", () => {
+    const invite0 = {
+      code: "code0"
+    }
+    const invite1 = {
+      code: "code1"
+    }
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
@@ -50,11 +57,13 @@ describe("/images", () => {
     let token1;
     let userId0;
     beforeEach(async () => {
-      const signupRes = await request(server).post("/auth/signup").send(user0);
+      await Invite.create(invite0);
+      await Invite.create(invite1);
+      const signupRes = await request(server).post("/auth/signup").send({...user0, invite: invite0.code});
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       userId0 = signupRes.body._id;
-      await request(server).post("/auth/signup").send(user1);
+      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
       const res1 = await request(server).post("/auth/login").send(user1);
       token1 = res1.body.token;
     });

@@ -6,6 +6,7 @@ const testUtils = require("../test-utils");
 const User = require("../models/user");
 const Image = require("../models/image");
 const Mini = require("../models/mini");
+const Invite = require("../models/invite");
 
 describe("/minis", () => {
   beforeAll(testUtils.connectDB);
@@ -109,6 +110,12 @@ describe("/minis", () => {
   });
 
   describe("after login", () => {
+    const invite0 = {
+      code: "code0"
+    }
+    const invite1 = {
+      code: "code1"
+    }
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
@@ -124,11 +131,13 @@ describe("/minis", () => {
     let userId0;
     let adminId;
     beforeEach(async () => {
-      await request(server).post("/auth/signup").send(user0);
+      await Invite.create(invite0);
+      await Invite.create(invite1);
+      await request(server).post("/auth/signup").send({...user0, invite: invite0.code});
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       userId0 = res0.body.userId;
-      await request(server).post("/auth/signup").send(user1);
+      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
       await User.updateOne(
         { email: user1.email },
         { $push: { roles: "admin" } }

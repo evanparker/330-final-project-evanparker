@@ -4,6 +4,7 @@ const server = require("../server");
 const testUtils = require("../test-utils");
 
 const User = require("../models/user");
+const Invite = require("../models/invite");
 
 describe("/auth", () => {
   beforeAll(testUtils.connectDB);
@@ -11,15 +12,21 @@ describe("/auth", () => {
 
   afterEach(testUtils.clearDB);
 
+  const invite = {
+    code: "inviteCode"
+  };
+  const invite1 = {
+    code: "inviteCode2"
+  };
   const user0 = {
     email: "user0@mail.com",
     username: "user0",
-    password: "123password"
+    password: "123password",
   };
   const user1 = {
     email: "user1@mail.com",
     username: "user1",
-    password: "456password"
+    password: "456password",
   };
 
   describe("before signup", () => {
@@ -45,23 +52,44 @@ describe("/auth", () => {
     });
   });
 
-  describe("signup ", () => {
+  describe("signup", () => {
     describe("POST /signup", () => {
+      beforeEach(async ()=> {
+        await Invite.create(invite);
+        await Invite.create(invite1);
+      });
       it("should return 400 without a password", async () => {
         const res = await request(server).post("/auth/signup").send({
+          invite: invite.code,
           email: user0.email
         });
         expect(res.statusCode).toEqual(400);
       });
       it("should return 400 with empty password", async () => {
         const res = await request(server).post("/auth/signup").send({
+          invite: invite.code,
           email: user1.email,
           password: ""
         });
         expect(res.statusCode).toEqual(400);
       });
+      it("should return 400 without invite code", async () => {
+        const res = await request(server).post("/auth/signup").send({
+          email: user1.email,
+          password: user1.password
+        });
+        expect(res.statusCode).toEqual(400);
+      });
+      it("should return 400 with wrong invite code", async () => {
+        const res = await request(server).post("/auth/signup").send({
+          invite: "invalid",
+          email: user1.email,
+          password: user1.password
+        });
+        expect(res.statusCode).toEqual(400);
+      });
       it("should return 200 with a password", async () => {
-        const res = await request(server).post("/auth/signup").send(user1);
+        const res = await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject({
           email: "user1@mail.com",
@@ -69,13 +97,13 @@ describe("/auth", () => {
         });
       });
       it("should return 409 Conflict with a repeat signup", async () => {
-        let res = await request(server).post("/auth/signup").send(user0);
+        let res = await request(server).post("/auth/signup").send({...user0, invite: invite.code});
         expect(res.statusCode).toEqual(200);
-        res = await request(server).post("/auth/signup").send(user0);
+        res = await request(server).post("/auth/signup").send({...user0, invite: invite1.code});
         expect(res.statusCode).toEqual(409);
       });
       it("should not store raw password", async () => {
-        await request(server).post("/auth/signup").send(user0);
+        await request(server).post("/auth/signup").send({...user0, invite: invite.code});
         const users = await User.find().lean();
         users.forEach((user) => {
           expect(Object.values(user)).not.toContain(user0.password);
@@ -86,8 +114,10 @@ describe("/auth", () => {
   });
   describe.each([user0, user1])("User %# after signup", (user) => {
     beforeEach(async () => {
-      await request(server).post("/auth/signup").send(user0);
-      await request(server).post("/auth/signup").send(user1);
+      await Invite.create(invite);
+      await request(server).post("/auth/signup").send({...user0, invite: invite.code});
+      await Invite.create(invite1);
+      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
     });
 
     describe("POST /", () => {
@@ -123,10 +153,12 @@ describe("/auth", () => {
     let token0;
     let token1;
     beforeEach(async () => {
-      await request(server).post("/auth/signup").send(user0);
+      await Invite.create(invite);
+      await request(server).post("/auth/signup").send({...user0, invite: invite.code});
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
-      await request(server).post("/auth/signup").send(user1);
+      await Invite.create(invite1);
+      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
       const res1 = await request(server).post("/auth/login").send(user1);
       token1 = res1.body.token;
     });

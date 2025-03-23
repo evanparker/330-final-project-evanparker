@@ -3,6 +3,7 @@ const router = Router();
 
 router.use("/auth", require("./auth"));
 router.use("/images", require("./images"));
+router.use("/invites", require("./invites"));
 router.use("/minis", require("./minis"));
 router.use("/users/", require("./users"));
 router.use("/manufacturers/", require("./manufacturers"));
