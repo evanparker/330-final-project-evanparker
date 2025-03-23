@@ -23,7 +23,12 @@ module.exports.getAllMinisWithThumnbnail = async () => {
 
 module.exports.getMiniById = async (id) => {
   let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) });
-  const images = await Image.find({ _id: { $in: mini.images.map(i=>i.toString()) } });
+  let images = [];
+  // TODO: find out if this is slow af/make this not slow af.
+  for( let image of mini.images) {
+    let fullImage = await Image.findOne({_id: image._id })
+    images.push(fullImage);
+  }
   mini.images = images;
   return mini;
 };
