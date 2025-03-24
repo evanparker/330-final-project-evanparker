@@ -23,6 +23,16 @@ router.get("/:username/minis", async (req, res, next) => {
   }
 });
 
+router.get("/me", isLoggedIn, async (req, res, next) => {
+  try {
+    let user = await UserDAO.findUserById(req.userId);
+    delete user.password;
+    res.json(user);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:username", async (req, res, next) => {
   try {
     let user = await UserDAO.findUserByUsername(req.params.username);

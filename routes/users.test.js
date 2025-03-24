@@ -149,6 +149,22 @@ describe("/users", () => {
       userIdB = signupResB.body._id;
     });
 
+    describe("GET /me", () => {
+      it("should send a 401 if token isn't valid", async () => {
+        const res = await request(server).get("/users/me").send();
+        expect(res.statusCode).toEqual(401);
+      });
+      it("should send a 200 with valid token", async () => {
+        const res = await request(server)
+          .get("/users/me")
+          .set("Authorization", "Bearer " + tokenA)
+          .send();
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.username).toEqual(userA.username);
+        expect(res.body.password).toBeUndefined();
+      });
+    });
+
     describe("PUT /:id", () => {
       it("should send 404 if no user is found", async () => {
         const res = await request(server)
