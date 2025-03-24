@@ -8,7 +8,7 @@ const miniSchema = new mongoose.Schema({
     required: true
   },
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
-  figureId: { type: mongoose.Schema.Types.ObjectId, ref: "figures" }
+  figure: { type: mongoose.Schema.Types.ObjectId, ref: "figures" }
 });
 
 module.exports = mongoose.model("minis", miniSchema);

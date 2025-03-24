@@ -114,13 +114,13 @@ The intention of this project is to be the back end for an image sharing site fo
 
   - `userId`
   - `images`: [Image]
-  - `figureId`
+  - `figure`: id
 
 - Figure
 
   - `name`: string
   - `images`: [Image]
-  - `manufacturerId`
+  - `manufacturer`: id
 
 - Manufacturer
 

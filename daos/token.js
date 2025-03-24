@@ -10,7 +10,7 @@ module.exports.makeTokenForUserId = async (userId) => {
 };
 
 module.exports.getUserIdFromToken = async (tokenString) => {
-  const token = await Token.findOne({ token: tokenString });
+  const token = await Token.findOne({ token: tokenString }).lean();
   return token ? token.userId : null;
 };
 

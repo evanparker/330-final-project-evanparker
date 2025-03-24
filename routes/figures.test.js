@@ -48,7 +48,7 @@ describe("/figures", () => {
     exampleFigure = {
       images: [images[0]._id, images[1]._id],
       name: "Example",
-      manufacturerId: exampleManufacturer._id
+      manufacturer: exampleManufacturer._id
     };
   });
 
@@ -60,7 +60,7 @@ describe("/figures", () => {
         figures.push(figure1);
         const figure2 = Figure.create({
           name: "figure 2",
-          manufacturerId: exampleManufacturer._id,
+          manufacturer: exampleManufacturer._id,
           images: [images[0]._id, images[1]._id]
         });
         figures.push(figure2);
@@ -85,18 +85,18 @@ describe("/figures", () => {
         figures.push(figure1);
         const figure2 = await Figure.create({
           name: "figure 2",
-          manufacturerId: exampleManufacturer._id,
+          manufacturer: exampleManufacturer._id,
           images: [images[0]._id, images[1]._id]
         });
         figures.push(figure2);
         const figure3 = await Figure.create({
           name: "figure 3",
-          manufacturerId: exampleManufacturer._id
+          manufacturer: exampleManufacturer._id
         });
         figures.push(figure3);
       });
 
-      it("should return 200 a specific figure with images and manufacturer object", async () => {
+      it("should return 200 for a specific figure with images and manufacturer object", async () => {
         const res1 = await request(server)
           .get("/figures/" + figures[0]._id)
           .send();

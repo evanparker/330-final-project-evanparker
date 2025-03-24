@@ -1,52 +1,38 @@
 const mongoose = require("mongoose");
 const Mini = require("../models/mini");
-const Image = require("../models/image");
 
 module.exports = {};
 
 module.exports.getAllMinis = async () => {
   // todo: pagination
-  return await Mini.find();
+  return await Mini.find().lean();
 };
 
 module.exports.getAllMinisWithThumnbnail = async () => {
-  // todo: pagination
-  let minis = await Mini.find();
-  for (let mini of minis) {
-    if(mini.images.length > 0) {
-      const image = await Image.findOne({_id: new mongoose.mongoose.Types.ObjectId(mini.images[0]._id)})
-      mini.images = [image];
-    }
-  }
+  let minis = await Mini.find()
+    .lean()
+    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
   return minis;
 };
 
 module.exports.getMiniById = async (id) => {
-  let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) });
-  let images = [];
-  // TODO: find out if this is slow af/make this not slow af.
-  for( let image of mini.images) {
-    let fullImage = await Image.findOne({_id: image._id })
-    images.push(fullImage);
-  }
-  mini.images = images;
+  let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) })
+    .lean()
+    .populate({ path: "figure", lean: true })
+    .populate({ path: "images", lean: true });
   return mini;
 };
 
 module.exports.getMinisByUserId = async (userId) => {
   // todo: pagination
-  return await Mini.find({ userId });
+  return await Mini.find({ userId }).lean();
 };
 
 module.exports.getMinisByUserIdWithThumbnails = async (userId) => {
   // todo: pagination
-  let minis = await Mini.find({ userId });
-  for (let mini of minis) {
-    if(mini.images.length > 0) {
-      const image = await Image.findOne({_id: new mongoose.mongoose.Types.ObjectId(mini.images[0]._id)})
-      mini.images = [image];
-    }
-  }
+  let minis = await Mini.find({ userId })
+    .lean()
+    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
   return minis;
 };
 

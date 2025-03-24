@@ -5,54 +5,15 @@ module.exports = {};
 
 module.exports.getAllFigures = async () => {
   // todo: pagination
-  return await Figure.find();
+  return await Figure.find().lean();
 };
 
 module.exports.getFigureById = async (id) => {
-  const figure = await Figure.findOne({ _id: id }).lean();
-
-  const aggregationPipeline = [
-    { $match: { _id: new mongoose.Types.ObjectId(id) } }
-  ];
-
-  if (figure?.manufacturerId) {
-    aggregationPipeline.push(
-      {
-        $lookup: {
-          from: "manufacturers",
-          localField: "manufacturerId",
-          foreignField: "_id",
-          as: "manufacturer"
-        }
-      },
-      { $unwind: { path: "$manufacturer" } }
-    );
-  }
-
-  if (figure?.images?.length > 0) {
-    aggregationPipeline.push(
-      { $unwind: { path: "$images" } },
-      {
-        $lookup: {
-          from: "images",
-          localField: "images",
-          foreignField: "_id",
-          as: "images"
-        }
-      },
-      { $unwind: { path: "$images" } },
-      {
-        $group: {
-          _id: "$_id",
-          name: { $first: "$name" },
-          manufacturer: { $first: "$manufacturer" },
-          images: { $push: "$images" }
-        }
-      }
-    );
-  }
-
-  return (await Figure.aggregate(aggregationPipeline))[0];
+  const figure = await Figure.findOne({ _id: id })
+    .lean()
+    .populate({ path: "manufacturer", lean: true })
+    .populate({ path: "images", lean: true });
+  return figure;
 };
 
 module.exports.createFigure = async (obj) => {

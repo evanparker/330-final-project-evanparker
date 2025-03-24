@@ -4,11 +4,11 @@ const Invite = require("../models/invite");
 module.exports = {};
 
 module.exports.getAllInvites = async () => {
-  return await Invite.find();
+  return await Invite.find().lean();
 };
 
 module.exports.getInviteByCode = async (code) => {
-  return await Invite.findOne({code: code});
+  return await Invite.findOne({code: code}).lean();
 };
 
 module.exports.createInvite = async (obj) => {

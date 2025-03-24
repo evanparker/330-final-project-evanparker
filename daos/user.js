@@ -7,15 +7,15 @@ module.exports.createUser = async (userData) => {
 };
 
 module.exports.findUserByEmail = async (email) => {
-  return await User.findOne({ email });
+  return await User.findOne({ email }).lean();
 };
 
 module.exports.findUserByUsername = async (username) => {
-  return await User.findOne({ username });
+  return await User.findOne({ username }).lean();
 };
 
 module.exports.findUserById = async (_id) => {
-  return await User.findOne({ _id });
+  return await User.findOne({ _id }).lean();
 };
 
 module.exports.updateUserPassword = async (userId, password) => {

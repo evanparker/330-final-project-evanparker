@@ -5,4 +5,6 @@ const manufacturerSchema = new mongoose.Schema({
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }]
 });
 
+manufacturerSchema.index({ name: 'text' });
+
 module.exports = mongoose.model("manufacturers", manufacturerSchema);
