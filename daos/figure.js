@@ -5,7 +5,7 @@ module.exports = {};
 
 module.exports.getAllFigures = async () => {
   // todo: pagination
-  return await Figure.find().lean();
+  return await Figure.find().lean().populate({ path: "images", lean: true });
 };
 
 module.exports.getFigureById = async (id) => {

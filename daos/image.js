@@ -7,18 +7,18 @@ module.exports.getAllImages = async () => {
   return await Image.find().lean();
 };
 
-module.exports.getImageById = async (id) => {
-  return await Image.findOne({ _id: id }).lean();
-};
+// module.exports.getImageById = async (id) => {
+//   return await Image.findOne({ _id: id }).lean();
+// };
 
 module.exports.getImagesByIds = async (ids) => {
   return await Image.find({ _id: { $in: ids } }).lean();
 };
 
-module.exports.getImagesByUserId = async (userId) => {
-  // todo: pagination
-  return await Image.find({ userId }).lean();
-};
+// module.exports.getImagesByUserId = async (userId) => {
+//   // todo: pagination
+//   return await Image.find({ userId }).lean();
+// };
 
 module.exports.createImage = async (ImageObj) => {
   return await Image.create(ImageObj);

@@ -6,8 +6,9 @@ const testUtils = require("../test-utils");
 const User = require("../models/user");
 const Image = require("../models/image");
 const Mini = require("../models/mini");
+const Invite = require("../models/invite");
 
-describe("/minis", () => {
+describe("/users", () => {
   beforeAll(testUtils.connectDB);
   afterAll(testUtils.stopDB);
 
@@ -16,12 +17,14 @@ describe("/minis", () => {
   const userNormal = {
     email: "userNormal@mail.com",
     username: "userNormal",
-    password: "999password"
+    password: "999password",
+    roles: ["user"]
   };
   const userOther = {
     email: "userOther@mail.com",
     username: "userOther",
-    password: "777password"
+    password: "777password",
+    roles: ["user"]
   };
 
   const image0 = {
@@ -54,19 +57,172 @@ describe("/minis", () => {
     await Mini.create({ ...miniTemplate, userId: user1._id });
   });
 
-  describe("GET /:id/minis", () => {
-    it("should return 200 and all a user's minis", async () => {
-      const res = await request(server)
-        .get("/users/" + user.username + "/minis")
-        .send();
-      expect(res.statusCode).toEqual(200);
-      expect(res.body.length).toBe(3);
+  describe("before login", () => {
+    describe("GET /:username/minis", () => {
+      it("should send 200 and all a user's minis", async () => {
+        const res = await request(server)
+          .get("/users/" + user.username + "/minis")
+          .send();
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.length).toBe(3);
+      });
+      it("should send 404 for a bad id", async () => {
+        const res = await request(server)
+          .get("/users/" + "nouser" + "/minis")
+          .send();
+        expect(res.statusCode).toEqual(404);
+      });
     });
-    it("should return 404 for a bad id", async () => {
-      const res = await request(server)
-        .get("/users/" + "nouser" + "/minis")
-        .send();
-      expect(res.statusCode).toEqual(404);
+    describe("GET /:username", () => {
+      it("should send 404 if no user is found", async () => {
+        const res = await request(server).get("/users/nouser").send();
+        expect(res.statusCode).toEqual(404);
+      });
+      it("should send 200 if user is found", async () => {
+        const res = await request(server)
+          .get("/users/" + user.username)
+          .send();
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject({
+          email: userNormal.email,
+          username: userNormal.username,
+          roles: ["user"]
+        });
+      });
+      it("should not include a password field", async () => {
+        const res = await request(server)
+          .get("/users/" + user.username)
+          .send();
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.password).toBe(undefined);
+      });
+    });
+    describe("PUT /:id", () => {
+      it("should send 401 without a token", async () => {
+        const res = await request(server)
+          .put("/users/" + user._id)
+          .send();
+        expect(res.statusCode).toEqual(401);
+      });
+    });
+  });
+
+  describe("after login", () => {
+    const invite0 = {
+      code: "code0"
+    };
+    const invite1 = {
+      code: "code1"
+    };
+    const userA = {
+      email: "userA@mail.com",
+      username: "userA",
+      password: "123password"
+    };
+    const userB = {
+      email: "userB@mail.com",
+      username: "userB",
+      password: "456password"
+    };
+    let tokenA;
+    let tokenB;
+    let userIdA;
+    let userIdB;
+    beforeEach(async () => {
+      await Invite.create(invite0);
+      await Invite.create(invite1);
+      const signupRes = await request(server)
+        .post("/auth/signup")
+        .send({ ...userA, invite: invite0.code });
+      const res0 = await request(server).post("/auth/login").send(userA);
+      tokenA = res0.body.token;
+      userIdA = signupRes.body._id;
+      const signupResB = await request(server)
+        .post("/auth/signup")
+        .send({ ...userB, invite: invite1.code });
+      await User.updateOne(
+        { email: userB.email },
+        { $push: { roles: "admin" } }
+      );
+      const res1 = await request(server).post("/auth/login").send(userB);
+      tokenB = res1.body.token;
+      userIdB = signupResB.body._id;
+    });
+
+    describe("PUT /:id", () => {
+      it("should send 404 if no user is found", async () => {
+        const res = await request(server)
+          .put("/users/6760251aa5945e92fb1f3629")
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ name: "new name" });
+        expect(res.statusCode).toEqual(404);
+        const res1 = await request(server)
+          .put("/users/invalid_id")
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ name: "new name" });
+        expect(res1.statusCode).toEqual(404);
+      });
+      it("should send 401 if editing user does not match and isn't an admin", async () => {
+        const res = await request(server)
+          .put(`/users/${userIdB}`)
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ name: "new name" });
+        expect(res.statusCode).toEqual(401);
+      });
+      it("should send 200 on successful edit", async () => {
+        // As self
+        const res = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ username: "new name" });
+        expect(res.statusCode).toEqual(200);
+        const updatedUserA = await User.findOne({ email: userA.email }).lean();
+        expect(updatedUserA.username).toEqual("new name");
+
+        // As admin
+        const res1 = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenB)
+          .send({ username: "new name2" });
+        expect(res1.statusCode).toEqual(200);
+        const updatedUserA2 = await User.findOne({ email: userA.email }).lean();
+        expect(updatedUserA2.username).toEqual("new name2");
+      });
+      it("should not be able to edit password", async () => {
+        const res = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ username: "new name", password: "newPassword" });
+        expect(res.statusCode).toEqual(200);
+        const updatedUserA = await User.findOne({ email: userA.email }).lean();
+        expect(updatedUserA.password).not.toEqual("newPassword");
+      });
+      it("should not be able to edit roles without admin", async () => {
+        const res = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ roles: ["user", "admin"] });
+        expect(res.statusCode).toEqual(200);
+        const updatedUserA = await User.findOne({ email: userA.email }).lean();
+        expect(updatedUserA.roles).not.toContain("admin");
+      });
+      it("should be able to edit roles with admin", async () => {
+        const res = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenB)
+          .send({ roles: ["user", "admin"] });
+        expect(res.statusCode).toEqual(200);
+        const updatedUserA = await User.findOne({ email: userA.email }).lean();
+        expect(updatedUserA.roles).toContain("admin");
+      });
+      it("should not include a password field in the response", async () => {
+        const res = await request(server)
+          .put(`/users/${userIdA}`)
+          .set("Authorization", "Bearer " + tokenA)
+          .send({ username: "new name" });
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.password).toBeUndefined();
+      });
     });
   });
 });

@@ -25,3 +25,12 @@ module.exports.updateUserPassword = async (userId, password) => {
     { new: true }
   );
 };
+
+module.exports.updateUser = async(userId, userObj) => {
+  delete userObj.password;
+  return await User.findOneAndUpdate(
+    { _id: userId },
+    userObj,
+    { new: true }
+  )
+}

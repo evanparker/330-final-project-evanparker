@@ -11,4 +11,6 @@ const miniSchema = new mongoose.Schema({
   figure: { type: mongoose.Schema.Types.ObjectId, ref: "figures" }
 });
 
+miniSchema.index({ name: 'text' });
+
 module.exports = mongoose.model("minis", miniSchema);
