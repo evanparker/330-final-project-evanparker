@@ -7,15 +7,21 @@ module.exports.createUser = async (userData) => {
 };
 
 module.exports.findUserByEmail = async (email) => {
-  return await User.findOne({ email }).lean();
+  return await User.findOne({ email })
+    .lean()
+    .populate({ path: "avatar", lean: true });
 };
 
 module.exports.findUserByUsername = async (username) => {
-  return await User.findOne({ username }).lean();
+  return await User.findOne({ username })
+    .lean()
+    .populate({ path: "avatar", lean: true });
 };
 
 module.exports.findUserById = async (_id) => {
-  return await User.findOne({ _id }).lean();
+  return await User.findOne({ _id })
+    .lean()
+    .populate({ path: "avatar", lean: true });
 };
 
 module.exports.updateUserPassword = async (userId, password) => {
@@ -26,11 +32,7 @@ module.exports.updateUserPassword = async (userId, password) => {
   );
 };
 
-module.exports.updateUser = async(userId, userObj) => {
+module.exports.updateUser = async (userId, userObj) => {
   delete userObj.password;
-  return await User.findOneAndUpdate(
-    { _id: userId },
-    userObj,
-    { new: true }
-  )
-}
+  return await User.findOneAndUpdate({ _id: userId }, userObj, { new: true });
+};
