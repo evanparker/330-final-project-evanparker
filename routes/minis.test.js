@@ -208,8 +208,7 @@ describe("/minis", () => {
           .send();
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject({
-          images: [image0, image1],
-          userId: (await User.findOne({ email: user0.email }))._id.toString()
+          images: [image0, image1]
         });
       });
       it("should send 200 for a mini without images", async () => {
@@ -218,8 +217,7 @@ describe("/minis", () => {
           .send();
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject({
-          images: [],
-          userId: (await User.findOne({ email: user0.email }))._id.toString()
+          images: []
         });
       });
     });

@@ -19,6 +19,7 @@ module.exports.getMiniById = async (id) => {
   let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) })
     .lean()
     .populate({ path: "figure", lean: true })
+    .populate({ path: "userId", lean: true, populate: { path: 'avatar', lean: true } })
     .populate({ path: "images", lean: true });
   return mini;
 };

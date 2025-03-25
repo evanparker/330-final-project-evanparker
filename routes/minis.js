@@ -53,7 +53,7 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
     const user = await UserDAO.findUserById(req.userId);
     if (
       !user.roles.includes("admin") &&
-      mini.userId.toString() !== req.userId.toString()
+      mini.userId._id.toString() !== req.userId.toString()
     ) {
       res.sendStatus(401);
       return;
@@ -71,7 +71,7 @@ router.delete("/:id", isLoggedIn, async (req, res, next) => {
     const user = await UserDAO.findUserById(req.userId);
     if (
       !user?.roles?.includes("admin") &&
-      mini?.userId.toString() !== req.userId.toString()
+      mini?.userId._id.toString() !== req.userId.toString()
     ) {
       res.sendStatus(401);
       return;
