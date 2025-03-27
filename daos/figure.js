@@ -17,7 +17,10 @@ module.exports.getFigureById = async (id) => {
 };
 
 module.exports.getFiguresBySearch = async (query) => {
-  const figures = await Figure.find({ "name": { "$regex": query, "$options": "i" } }).lean().limit(20);
+  const figures = await Figure.find({ name: { $regex: query, $options: "i" } })
+    .lean()
+    .sort({ name: 1 })
+    .limit(20);
   return figures;
 };
 
