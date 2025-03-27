@@ -8,6 +8,7 @@ const Image = require("../models/image");
 const Manufacturer = require("../models/manufacturer");
 const Figure = require("../models/figure");
 const Invite = require("../models/invite");
+const manufacturer = require("../models/manufacturer");
 
 describe("/figures", () => {
   beforeAll(testUtils.connectDB);
@@ -134,15 +135,55 @@ describe("/figures", () => {
         });
       });
     });
+
+    describe("GET /search?query=query", () => {
+      let figures = [];
+      beforeEach(async () => {
+        const figure1 = await Figure.create({
+          name: "Sarah Blitzer, IMEF Sniper",
+          images: [images[0]._id, images[1]._id]
+        });
+        figures.push(figure1);
+        const figure2 = await Figure.create({
+          name: "Stub, Gnome Accountant",
+          manufacturer: exampleManufacturer._id,
+          images: [images[0]._id, images[1]._id]
+        });
+        figures.push(figure2);
+        const figure3 = await Figure.create({
+          name: "Fumbus, Iconic Alchemist",
+          manufacturer: exampleManufacturer._id
+        });
+        figures.push(figure3);
+      });
+
+      it("should return 200 for a valid search", async () => {
+        const res1 = await request(server)
+          .get(`/figures/search?query=IMEF`)
+          .send();
+        expect(res1.statusCode).toEqual(200);
+        expect(res1.body[0]).toMatchObject({
+          name: "Sarah Blitzer, IMEF Sniper"
+        });
+
+        const res2 = await request(server)
+          .get(`/figures/search?query=gnome`)
+          .send();
+        expect(res2.statusCode).toEqual(200);
+        expect(res2.body[0]).toMatchObject({
+          name: "Stub, Gnome Accountant"
+        });
+      });
+    });
   });
 
   describe("After Login", () => {
     const invite0 = {
       code: "code0"
-    }
+    };
     const invite1 = {
       code: "code1"
-    }
+    };
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
@@ -160,12 +201,16 @@ describe("/figures", () => {
     beforeEach(async () => {
       await Invite.create(invite0);
       await Invite.create(invite1);
-      await request(server).post("/auth/signup").send({...user0, invite: invite0.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user0, invite: invite0.code });
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       userId0 = res0.body.userId;
 
-      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user1, invite: invite1.code });
       await User.updateOne(
         { email: user1.email },
         { $push: { roles: "admin" } }

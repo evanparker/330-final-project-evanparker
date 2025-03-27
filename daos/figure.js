@@ -16,6 +16,12 @@ module.exports.getFigureById = async (id) => {
   return figure;
 };
 
+module.exports.getFiguresBySearch = async (query) => {
+  console.log("query:", query);
+  const figures = await Figure.find({ $text: { $search: query } }).lean().limit(20);
+  return figures;
+};
+
 module.exports.createFigure = async (obj) => {
   return await Figure.create(obj);
 };

@@ -15,6 +15,15 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/search", async (req, res, next) => {
+  try {
+    const figures = await FigureDAO.getFiguresBySearch(req.query.query);
+    res.json(figures);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:id", async (req, res, next) => {
   try {
     const figure = await FigureDAO.getFigureById(req.params.id);
