@@ -37,6 +37,14 @@ module.exports.getMinisByUserIdWithThumbnails = async (userId) => {
   return minis;
 };
 
+module.exports.getMinisByFigureIdWithThumbnails = async (figureId) => {
+  // todo: pagination
+  let minis = await Mini.find({ figure: figureId })
+    .lean()
+    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+  return minis;
+};
+
 module.exports.createMini = async (miniObj) => {
   return await Mini.create(miniObj);
 };

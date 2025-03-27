@@ -8,7 +8,7 @@ const Image = require("../models/image");
 const Manufacturer = require("../models/manufacturer");
 const Figure = require("../models/figure");
 const Invite = require("../models/invite");
-const manufacturer = require("../models/manufacturer");
+const Mini = require("../models/mini");
 
 describe("/figures", () => {
   beforeAll(testUtils.connectDB);
@@ -132,6 +132,41 @@ describe("/figures", () => {
             images: [images[0]._id.toString(), images[1]._id.toString()],
             name: "Example Manufacturer"
           }
+        });
+      });
+    });
+
+    describe("GET /:id/minis", () => {
+      let minis = [];
+      let figure;
+      beforeEach(async () => {
+        figure = await Figure.create(exampleFigure);
+        minis[0] = await Mini.create({
+          name: "Example Mini 1",
+          userId: user._id,
+          figure: figure._id,
+          images: [images[1]._id, images[0]._id]
+        });
+        minis[1] = await Mini.create({
+          name: "Example Mini 2",
+          userId: user._id,
+          figure: figure._id,
+          images: [images[0]._id, images[1]._id]
+        });
+      });
+
+      it("should return 200 for valid figure id", async () => {
+        const res1 = await request(server)
+          .get(`/figures/${figure._id}/minis`)
+          .send();
+        expect(res1.statusCode).toEqual(200);
+        res1.body.forEach((mini, i) => {
+          expect(mini).toMatchObject({
+            _id: minis[i]._id.toString(),
+            name: minis[i].name,
+            figure: minis[i].figure.toString()
+          });
+          expect(mini.images.length).toEqual(1);
         });
       });
     });

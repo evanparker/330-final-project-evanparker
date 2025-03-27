@@ -33,6 +33,17 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/:id/minis", async (req, res, next) => {
+  try {
+    const minis = await MiniDAO.getMinisByFigureIdWithThumbnails(
+      req.params.id
+    );
+    res.json(minis);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.post("/", isLoggedIn, isAdmin, async (req, res, next) => {
   try {
     const figure = await FigureDAO.createFigure(req.body);
