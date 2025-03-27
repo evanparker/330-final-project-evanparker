@@ -8,7 +8,7 @@ module.exports.getAllImages = async () => {
 };
 
 // module.exports.getImageById = async (id) => {
-//   return await Image.findOne({ _id: id }).lean();
+//   return await Image.findById( id ).lean();
 // };
 
 module.exports.getImagesByIds = async (ids) => {

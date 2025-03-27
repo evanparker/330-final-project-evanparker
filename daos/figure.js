@@ -9,7 +9,7 @@ module.exports.getAllFigures = async () => {
 };
 
 module.exports.getFigureById = async (id) => {
-  const figure = await Figure.findOne({ _id: id })
+  const figure = await Figure.findById(id)
     .lean()
     .populate({ path: "manufacturer", lean: true })
     .populate({ path: "images", lean: true });

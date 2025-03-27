@@ -16,7 +16,7 @@ module.exports.getAllMinisWithThumnbnail = async () => {
 };
 
 module.exports.getMiniById = async (id) => {
-  let mini = await Mini.findOne({ _id: new mongoose.Types.ObjectId(id) })
+  let mini = await Mini.findById(id)
     .lean()
     .populate({ path: "figure", lean: true })
     .populate({ path: "userId", lean: true, populate: { path: 'avatar', lean: true } })

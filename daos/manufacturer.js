@@ -9,8 +9,7 @@ module.exports.getAllManufacturers = async () => {
 };
 
 module.exports.getManufacturerById = async (id) => {
-  // return await Manufacturer.findOne({ _id: id });
-  const manufacturer = await Manufacturer.findOne({ _id: id })
+  const manufacturer = await Manufacturer.findById(id)
     .lean()
     .populate({ path: "images", lean: true });
   return manufacturer;

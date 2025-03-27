@@ -19,7 +19,7 @@ module.exports.findUserByUsername = async (username) => {
 };
 
 module.exports.findUserById = async (_id) => {
-  return await User.findOne({ _id })
+  return await User.findById(_id)
     .lean()
     .populate({ path: "avatar", lean: true });
 };
