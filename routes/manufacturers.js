@@ -13,6 +13,15 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/search", async (req, res, next) => {
+  try {
+    const manufacturers = await ManufacturerDAO.getManufacturersBySearch(req.query.query);
+    res.json(manufacturers);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:id", async (req, res, next) => {
   try {
     const manufacturer = await ManufacturerDAO.getManufacturerById(

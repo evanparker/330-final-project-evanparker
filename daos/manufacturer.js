@@ -15,6 +15,14 @@ module.exports.getManufacturerById = async (id) => {
   return manufacturer;
 };
 
+module.exports.getManufacturersBySearch = async (query) => {
+  const manufacturers = await Manufacturer.find({ name: { $regex: query, $options: "i" } })
+    .lean()
+    .sort({ name: 1 })
+    .limit(20);
+  return manufacturers;
+};
+
 module.exports.createManufacturer = async (obj) => {
   return await Manufacturer.create(obj);
 };
