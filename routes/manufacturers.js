@@ -1,9 +1,7 @@
 const { Router } = require("express");
 const router = Router();
-const MiniDAO = require("../daos/mini");
+const FigureDAO = require("../daos/figure");
 const ManufacturerDAO = require("../daos/manufacturer");
-const ImageDAO = require("../daos/image");
-const UserDAO = require("../daos/user");
 const { isLoggedIn, isAdmin } = require("./middleware");
 
 router.get("/", async (req, res, next) => {
@@ -21,6 +19,17 @@ router.get("/:id", async (req, res, next) => {
       req.params.id
     );
     res.json(manufacturer);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get("/:id/figures", async (req, res, next) => {
+  try {
+    const minis = await FigureDAO.getFiguresBymanufacturerIdWithThumbnails(
+      req.params.id
+    );
+    res.json(minis);
   } catch (e) {
     next(e);
   }

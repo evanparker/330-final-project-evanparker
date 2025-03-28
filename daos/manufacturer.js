@@ -5,7 +5,7 @@ module.exports = {};
 
 module.exports.getAllManufacturers = async () => {
   // todo: pagination
-  return await Manufacturer.find().lean();
+  return await Manufacturer.find().lean().populate({ path: "images", lean: true });
 };
 
 module.exports.getManufacturerById = async (id) => {

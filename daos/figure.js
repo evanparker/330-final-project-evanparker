@@ -24,6 +24,14 @@ module.exports.getFiguresBySearch = async (query) => {
   return figures;
 };
 
+module.exports.getFiguresBymanufacturerIdWithThumbnails = async (manufacturerId) => {
+  // todo: pagination
+  let figures = await Figure.find({ manufacturer: manufacturerId })
+    .lean()
+    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+  return figures;
+};
+
 module.exports.createFigure = async (obj) => {
   return await Figure.create(obj);
 };
