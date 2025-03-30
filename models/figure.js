@@ -6,9 +6,11 @@ const figureSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "manufacturers"
   },
-  images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }]
+  images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
+  website: { type: String },
+  partNumber: { type: String }
 });
 
-figureSchema.index({ name: 'text' });
+figureSchema.index({ name: 'text', partNumber: "text" });
 
 module.exports = mongoose.model("figures", figureSchema);

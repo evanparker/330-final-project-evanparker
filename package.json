@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest --coverage --runInBand",
-    "tdd": "jest --watch --runInBand"
+    "tdd": "jest --watch --runInBand",
+    "migrate:up": "migrate-mongo up",
+    "migrate:down": "migrate-mongo down"
   },
   "engines": {
     "node": "23.x"
