@@ -11,7 +11,7 @@ module.exports.getAllMinis = async () => {
 module.exports.getAllMinisWithThumnbnail = async () => {
   let minis = await Mini.find()
     .lean()
-    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+    .populate({ path: "thumbnail", lean: true });
   return minis;
 };
 
@@ -19,7 +19,11 @@ module.exports.getMiniById = async (id) => {
   let mini = await Mini.findById(id)
     .lean()
     .populate({ path: "figure", lean: true })
-    .populate({ path: "userId", lean: true, populate: { path: 'avatar', lean: true } })
+    .populate({
+      path: "userId",
+      lean: true,
+      populate: { path: "avatar", lean: true }
+    })
     .populate({ path: "images", lean: true });
   return mini;
 };
@@ -33,7 +37,7 @@ module.exports.getMinisByUserIdWithThumbnails = async (userId) => {
   // todo: pagination
   let minis = await Mini.find({ userId })
     .lean()
-    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+    .populate({ path: "thumbnail", lean: true });
   return minis;
 };
 
@@ -41,7 +45,7 @@ module.exports.getMinisByFigureIdWithThumbnails = async (figureId) => {
   // todo: pagination
   let minis = await Mini.find({ figure: figureId })
     .lean()
-    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+    .populate({ path: "thumbnail", lean: true });
   return minis;
 };
 

@@ -7,9 +7,11 @@ const figureSchema = new mongoose.Schema({
     ref: "manufacturers"
   },
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
+  thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: "images" },
   description: { type: String },
   website: { type: String },
-  partNumber: { type: String }
+  partNumber: { type: String },
+  artist: { type: String }
 });
 
 figureSchema.index({ name: "text", partNumber: "text" });

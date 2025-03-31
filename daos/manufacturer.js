@@ -5,7 +5,9 @@ module.exports = {};
 
 module.exports.getAllManufacturers = async () => {
   // todo: pagination
-  return await Manufacturer.find().lean().populate({ path: "images", lean: true });
+  return await Manufacturer.find()
+    .lean()
+    .populate({ path: "thumbnail", lean: true });
 };
 
 module.exports.getManufacturerById = async (id) => {
@@ -16,7 +18,9 @@ module.exports.getManufacturerById = async (id) => {
 };
 
 module.exports.getManufacturersBySearch = async (query) => {
-  const manufacturers = await Manufacturer.find({ name: { $regex: query, $options: "i" } })
+  const manufacturers = await Manufacturer.find({
+    name: { $regex: query, $options: "i" }
+  })
     .lean()
     .sort({ name: 1 })
     .limit(20);

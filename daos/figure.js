@@ -5,7 +5,7 @@ module.exports = {};
 
 module.exports.getAllFigures = async () => {
   // todo: pagination
-  return await Figure.find().lean().populate({ path: "images", lean: true });
+  return await Figure.find().lean().populate({ path: "thumbnail", lean: true });
 };
 
 module.exports.getFigureById = async (id) => {
@@ -24,11 +24,13 @@ module.exports.getFiguresBySearch = async (query) => {
   return figures;
 };
 
-module.exports.getFiguresBymanufacturerIdWithThumbnails = async (manufacturerId) => {
+module.exports.getFiguresBymanufacturerIdWithThumbnails = async (
+  manufacturerId
+) => {
   // todo: pagination
   let figures = await Figure.find({ manufacturer: manufacturerId })
     .lean()
-    .populate({ path: "images", lean: true, perDocumentLimit: 1 });
+    .populate({ path: "thumbnail", lean: true });
   return figures;
 };
 
