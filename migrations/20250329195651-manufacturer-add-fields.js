@@ -9,7 +9,7 @@ module.exports = {
     // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
     // Example:
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
-    db.collection("manufacturers").updateMany({}, { $set: {
+    await db.collection("manufacturers").updateMany({}, { $set: {
       website: "",
       description: "",
       socials: []
@@ -25,7 +25,7 @@ module.exports = {
     // TODO write the statements to rollback your migration (if possible)
     // Example:
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
-    db.collection("manufacturers").updateMany(
+    await db.collection("manufacturers").updateMany(
       {},
       { $unset: {
         website: null,

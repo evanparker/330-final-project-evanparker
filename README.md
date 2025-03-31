@@ -26,14 +26,18 @@ The intention of this project is to be the back end for an image sharing site fo
 
   - get all: `GET /figures`
   - get one: `GET /figures/:id`
-  - create: `GET /figures/:id` - requires authentication
-  - update: `GET /figures/:id` - requires authentication
+  - get minis: `GET /figures/:id/minis`
+  - search: `GET /figures/search?query=:query`
+  - create: `POST /figures/` - requires authentication
+  - update: `PUT /figures/:id` - requires authentication
   - Delete: `DELETE /figures/:id` - requires admin
 
 - Manufacturers
 
   - get all: `GET /manufacturers`
   - get one: `GET /manufacturers/:id`
+  - get figures: `GET /manufacturers/:id/figures`
+  - search: `GET /manufacturers/search?query=:query`
   - create: `POST /manufacturers` - requires admin
   - update: `PUT /manufacturers` - requires admin
   - Delete: `DELETE /manufacturers/:id` - requires admin
@@ -41,11 +45,15 @@ The intention of this project is to be the back end for an image sharing site fo
 - Users
 
   - Get user's minis: `GET /users/:username/minis` - public, should provide a list of a user's minis
+  - Get a user's Data: `GET /users/:username`
+  - Get the logged in user: `GET /users/me`
+  - Update user (non-auth data) - `PUT /users/:id`
 
 - Auth
 
   - Signup: `POST /auth/signup`
   - Login: `POST /auth/login`
+  - Logout: `POST /auth/logout`
   - Change Password `PUT /auth/password` - requires authentication
 
 ### DAOS
@@ -70,6 +78,8 @@ The intention of this project is to be the back end for an image sharing site fo
   - `createFigure`
   - `updateFigure`
   - `deleteFigure`
+  - `getFiguresBymanufacturerIdWithThumbnails`
+  - `getFiguresBySearch`
 
 - Manufacturers
 
@@ -78,6 +88,7 @@ The intention of this project is to be the back end for an image sharing site fo
   - `createManufacturer`
   - `updateManufacturer`
   - `deleteManufacturer`
+  - `getManufacturersBySearch`
 
 - Users
 
@@ -85,6 +96,9 @@ The intention of this project is to be the back end for an image sharing site fo
   - `updateUser`
   - `findUserByUsername`
   - `findUserByEmail`
+  - `findUserById`
+  - `updateUser`
+  - `updateUserPassword`
 
 - Tokens
 
@@ -99,10 +113,13 @@ The intention of this project is to be the back end for an image sharing site fo
   - `email`: string, index, unique
   - `password`: string, encrypt
   - `roles`: [string]
+  - `website`: string
+  - `description`: string
+  - `socials`: [{service: string, link: string}]
 
 - Image
 
-  - `image`: string
+  - `cloudinaryPublicId`: string
   - `userId`
 
 - Token
@@ -115,26 +132,22 @@ The intention of this project is to be the back end for an image sharing site fo
   - `userId`
   - `images`: [Image]
   - `figure`: id
+  - `description`: string
 
 - Figure
 
   - `name`: string
   - `images`: [Image]
   - `manufacturer`: id
+  - `website`: string
+  - `description`: string
+  - `partNumber`: string
 
 - Manufacturer
 
   - `name`: string
   - `images`: [Image]
+  - `website`: string
+  - `description`: string
+  - `socials`: [{service: string, link: string}]
 
-## Self Evaluation
-
-### What went well:
-
-Tried test driven development for the minis routes, and once I got the advice to do one route at a time it went pretty smootly. Having the milestone in the middle of the project helped keep me on schedule.
-
-### What didn't go well:
-
-The project is pretty bare bones, and to be useful would need a few more optional fields added to the minis/images models. I feel never really learned _how_ to plan more complicated schemas, and some tools/references for visualizing them would have been useful.
-
-There's still a lot of work to do to make this into a usable project. Ideally there'd be models for manufacturers, figures (and collections of figures), and paintjobs. I'd also like to find and efficent way to serve the first image of a mini for thumnbail purposes when getting multiple minis at once.
