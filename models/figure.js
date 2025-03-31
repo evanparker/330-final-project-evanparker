@@ -7,10 +7,11 @@ const figureSchema = new mongoose.Schema({
     ref: "manufacturers"
   },
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "images" }],
+  description: { type: String },
   website: { type: String },
   partNumber: { type: String }
 });
 
-figureSchema.index({ name: 'text', partNumber: "text" });
+figureSchema.index({ name: "text", partNumber: "text" });
 
 module.exports = mongoose.model("figures", figureSchema);
