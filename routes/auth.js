@@ -24,12 +24,7 @@ router.post("/signup", async (req, res, next) => {
       res.sendStatus(400);
     }
   } catch (e) {
-    if (e.message.includes("duplicate key error collection")) {
-      res.sendStatus(409);
-      return;
-    } else {
-      next(e);
-    }
+    next(e);
   }
 });
 

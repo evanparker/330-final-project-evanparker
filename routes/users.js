@@ -36,7 +36,7 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
 router.get("/:username", async (req, res, next) => {
   try {
     let user = await UserDAO.findUserByUsername(req.params.username);
-    if(!user) {
+    if (!user) {
       res.sendStatus(404);
       return;
     }
@@ -51,7 +51,7 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
   try {
     const user = await UserDAO.findUserById(req.userId);
     const userToEdit = await UserDAO.findUserById(req.params.id);
-    if(!userToEdit) {
+    if (!userToEdit) {
       res.sendStatus(404);
       return;
     }
@@ -70,10 +70,6 @@ router.put("/:id", isLoggedIn, async (req, res, next) => {
     delete updatedUser.password;
     res.json(updatedUser);
   } catch (e) {
-    if(e.message.includes("Cast to ObjectId failed")) {
-      res.sendStatus(404);
-      return;
-    }
     next(e);
   }
 });

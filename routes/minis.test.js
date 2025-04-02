@@ -112,10 +112,10 @@ describe("/minis", () => {
   describe("after login", () => {
     const invite0 = {
       code: "code0"
-    }
+    };
     const invite1 = {
       code: "code1"
-    }
+    };
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
@@ -133,11 +133,15 @@ describe("/minis", () => {
     beforeEach(async () => {
       await Invite.create(invite0);
       await Invite.create(invite1);
-      await request(server).post("/auth/signup").send({...user0, invite: invite0.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user0, invite: invite0.code });
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       userId0 = res0.body.userId;
-      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user1, invite: invite1.code });
       await User.updateOne(
         { email: user1.email },
         { $push: { roles: "admin" } }
@@ -173,7 +177,7 @@ describe("/minis", () => {
         const res = await request(server)
           .post("/minis")
           .set("Authorization", "Bearer " + token0)
-          .send({name: "example", images: []});
+          .send({ name: "example", images: [] });
         expect(res.statusCode).toEqual(200);
         const storedMini = await Mini.findOne().lean();
         expect(storedMini).toMatchObject({
@@ -219,6 +223,16 @@ describe("/minis", () => {
         expect(res.body).toMatchObject({
           images: []
         });
+      });
+      it("should send 404 for an invalid id", async () => {
+        const res1 = await request(server)
+          .get("/minis/" + "bad")
+          .send();
+        expect(res1.statusCode).toEqual(404);
+        const res2 = await request(server)
+          .get("/minis/" + "67da341d107c7fec124e8244")
+          .send();
+        expect(res2.statusCode).toEqual(404);
       });
     });
 

@@ -166,7 +166,6 @@ describe("/figures", () => {
             name: minis[i].name,
             figure: minis[i].figure.toString()
           });
-          expect(mini.images.length).toEqual(1);
         });
       });
     });

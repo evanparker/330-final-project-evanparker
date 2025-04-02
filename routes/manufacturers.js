@@ -15,7 +15,9 @@ router.get("/", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
   try {
-    const manufacturers = await ManufacturerDAO.getManufacturersBySearch(req.query.query);
+    const manufacturers = await ManufacturerDAO.getManufacturersBySearch(
+      req.query.query
+    );
     res.json(manufacturers);
   } catch (e) {
     next(e);
@@ -49,11 +51,7 @@ router.post("/", isLoggedIn, isAdmin, async (req, res, next) => {
     const manufacturer = await ManufacturerDAO.createManufacturer(req.body);
     res.json(manufacturer);
   } catch (e) {
-    if (e.message.includes("validation failed")) {
-      res.sendStatus(400);
-    } else {
-      next(e);
-    }
+    next(e);
   }
 });
 
@@ -64,6 +62,17 @@ router.put("/:id", isLoggedIn, isAdmin, async (req, res, next) => {
       req.body
     );
     res.json(updatedManufacturer);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.delete("/:id", isLoggedIn, isAdmin, async (req, res, next) => {
+  try {
+    const deletedManufacturer = await ManufacturerDAO.deleteManufacturer(
+      req.params.id
+    );
+    res.json(deletedManufacturer);
   } catch (e) {
     next(e);
   }

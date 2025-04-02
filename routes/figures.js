@@ -35,9 +35,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.get("/:id/minis", async (req, res, next) => {
   try {
-    const minis = await MiniDAO.getMinisByFigureIdWithThumbnails(
-      req.params.id
-    );
+    const minis = await MiniDAO.getMinisByFigureIdWithThumbnails(req.params.id);
     res.json(minis);
   } catch (e) {
     next(e);
@@ -49,11 +47,7 @@ router.post("/", isLoggedIn, isAdmin, async (req, res, next) => {
     const figure = await FigureDAO.createFigure(req.body);
     res.json(figure);
   } catch (e) {
-    if (e.message.includes("validation failed")) {
-      res.sendStatus(400);
-    } else {
-      next(e);
-    }
+    next(e);
   }
 });
 
@@ -61,6 +55,15 @@ router.put("/:id", isLoggedIn, isAdmin, async (req, res, next) => {
   try {
     const updatedFigure = await FigureDAO.updateFigure(req.params.id, req.body);
     res.json(updatedFigure);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.delete("/:id", isLoggedIn, isAdmin, async (req, res, next) => {
+  try {
+    const deletedFigure = await FigureDAO.deleteFigure(req.params.id);
+    res.json(deletedFigure);
   } catch (e) {
     next(e);
   }

@@ -9,11 +9,7 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     const image = await ImageDAO.createImage(imageObj);
     res.json(image);
   } catch (e) {
-    if (e.message.includes("validation failed")) {
-      res.sendStatus(400);
-    } else {
-      next(e);
-    }
+    next(e);
   }
 });
 
