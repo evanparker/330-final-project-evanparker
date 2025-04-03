@@ -42,6 +42,13 @@ module.exports.updateFigure = async (id, obj) => {
   return await Figure.updateOne({ _id: id }, obj, { new: true });
 };
 
+module.exports.upsertFigure = async (filter, obj) => {
+  return await Figure.findOneAndUpdate(filter, obj, {
+    new: true,
+    upsert: true // Make this update into an upsert
+  });
+};
+
 module.exports.deleteFigure = async (id) => {
   return await Figure.findOneAndDelete({ _id: id });
 };

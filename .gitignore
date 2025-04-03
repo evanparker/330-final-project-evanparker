@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 migrate-mongo-config.*
+
+data
+data/*
