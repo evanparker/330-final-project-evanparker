@@ -254,7 +254,7 @@ describe("/minis", () => {
       it("should return 200 and all minis", async () => {
         const res = await request(server).get("/minis/").send();
         expect(res.statusCode).toEqual(200);
-        res.body.forEach((mini, i) => {
+        res.body.docs.forEach((mini, i) => {
           expect(mini).toMatchObject(minis[i]);
         });
       });

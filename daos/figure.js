@@ -3,9 +3,23 @@ const Figure = require("../models/figure");
 
 module.exports = {};
 
-module.exports.getAllFigures = async () => {
-  // todo: pagination
-  return await Figure.find().lean().populate({ path: "thumbnail", lean: true });
+const getFigures = async (dbQuery = {}, queryParams = {}, options = {}) => {
+  const limit = queryParams.limit === undefined ? 20 : queryParams.limit;
+  const offset = queryParams.offset === undefined ? 0 : queryParams.offset;
+
+  const result = Figure.paginate(dbQuery, {
+    populate: "thumbnail",
+    lean: true,
+    offset,
+    limit,
+    ...options
+  });
+
+  return result;
+};
+
+module.exports.getAllFigures = async (queryParams = {}) => {
+  return getFigures({}, queryParams);
 };
 
 module.exports.getFigureById = async (id) => {
@@ -16,22 +30,19 @@ module.exports.getFigureById = async (id) => {
   return figure;
 };
 
-module.exports.getFiguresBySearch = async (query) => {
-  const figures = await Figure.find({ name: { $regex: query, $options: "i" } })
-    .lean()
-    .sort({ name: 1 })
-    .limit(20);
-  return figures;
+module.exports.getFiguresBySearch = async (queryParams = {}) => {
+  return getFigures(
+    { name: { $regex: queryParams.search, $options: "i" } },
+    queryParams,
+    { sort: { name: 1 } }
+  );
 };
 
-module.exports.getFiguresBymanufacturerIdWithThumbnails = async (
-  manufacturerId
+module.exports.getFiguresBymanufacturerId = async (
+  manufacturerId,
+  queryParams = {}
 ) => {
-  // todo: pagination
-  let figures = await Figure.find({ manufacturer: manufacturerId })
-    .lean()
-    .populate({ path: "thumbnail", lean: true });
-  return figures;
+  return getFigures({ manufacturer: manufacturerId }, queryParams);
 };
 
 module.exports.createFigure = async (obj) => {

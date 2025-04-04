@@ -78,7 +78,7 @@ The intention of this project is to be the back end for an image sharing site fo
   - `createFigure`
   - `updateFigure`
   - `deleteFigure`
-  - `getFiguresBymanufacturerIdWithThumbnails`
+  - `getFiguresBymanufacturerId`
   - `getFiguresBySearch`
 
 - Manufacturers
@@ -150,4 +150,3 @@ The intention of this project is to be the back end for an image sharing site fo
   - `website`: string
   - `description`: string
   - `socials`: [{service: string, link: string}]
-

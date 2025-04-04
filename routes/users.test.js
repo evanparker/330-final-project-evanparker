@@ -64,7 +64,7 @@ describe("/users", () => {
           .get("/users/" + user.username + "/minis")
           .send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body.length).toBe(3);
+        expect(res.body.docs.length).toBe(3);
       });
       it("should send 404 for a bad id", async () => {
         const res = await request(server)

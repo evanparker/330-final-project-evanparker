@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const miniSchema = new mongoose.Schema({
   name: { type: String },
@@ -14,5 +15,7 @@ const miniSchema = new mongoose.Schema({
 });
 
 miniSchema.index({ name: "text" });
+
+miniSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("minis", miniSchema);

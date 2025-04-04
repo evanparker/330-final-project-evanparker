@@ -3,16 +3,23 @@ const Mini = require("../models/mini");
 
 module.exports = {};
 
-module.exports.getAllMinis = async () => {
-  // todo: pagination
-  return await Mini.find().lean();
+const getMinis = async (dbQuery = {}, queryParams = {}, options = {}) => {
+  const limit = queryParams.limit === undefined ? 20 : queryParams.limit;
+  const offset = queryParams.offset === undefined ? 0 : queryParams.offset;
+
+  const result = Mini.paginate(dbQuery, {
+    populate: "thumbnail",
+    lean: true,
+    offset,
+    limit,
+    ...options
+  });
+
+  return result;
 };
 
-module.exports.getAllMinisWithThumnbnail = async () => {
-  let minis = await Mini.find()
-    .lean()
-    .populate({ path: "thumbnail", lean: true });
-  return minis;
+module.exports.getAllMinis = async (queryParams = {}) => {
+  return getMinis({}, queryParams);
 };
 
 module.exports.getMiniById = async (id) => {
@@ -28,25 +35,12 @@ module.exports.getMiniById = async (id) => {
   return mini;
 };
 
-module.exports.getMinisByUserId = async (userId) => {
-  // todo: pagination
-  return await Mini.find({ userId }).lean();
+module.exports.getMinisByUserId = async (userId, queryParams = {}) => {
+  return getMinis({ userId }, queryParams);
 };
 
-module.exports.getMinisByUserIdWithThumbnails = async (userId) => {
-  // todo: pagination
-  let minis = await Mini.find({ userId })
-    .lean()
-    .populate({ path: "thumbnail", lean: true });
-  return minis;
-};
-
-module.exports.getMinisByFigureIdWithThumbnails = async (figureId) => {
-  // todo: pagination
-  let minis = await Mini.find({ figure: figureId })
-    .lean()
-    .populate({ path: "thumbnail", lean: true });
-  return minis;
+module.exports.getMinisByFigureId = async (figureId, queryParams = {}) => {
+  return getMinis({ figure: figureId }, queryParams);
 };
 
 module.exports.createMini = async (miniObj) => {

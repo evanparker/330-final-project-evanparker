@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const figureSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -15,5 +16,7 @@ const figureSchema = new mongoose.Schema({
 });
 
 figureSchema.index({ name: "text", partNumber: "text" });
+
+figureSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("figures", figureSchema);

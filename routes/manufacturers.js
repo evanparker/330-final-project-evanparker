@@ -6,8 +6,8 @@ const { isLoggedIn, isAdmin } = require("./middleware");
 
 router.get("/", async (req, res, next) => {
   try {
-    const manufacturers = await ManufacturerDAO.getAllManufacturers();
-    res.json(manufacturers);
+    const results = await ManufacturerDAO.getAllManufacturers(req.query);
+    res.json(results);
   } catch (e) {
     next(e);
   }
@@ -15,10 +15,8 @@ router.get("/", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
   try {
-    const manufacturers = await ManufacturerDAO.getManufacturersBySearch(
-      req.query.query
-    );
-    res.json(manufacturers);
+    const results = await ManufacturerDAO.getManufacturersBySearch(req.query);
+    res.json(results);
   } catch (e) {
     next(e);
   }
@@ -37,10 +35,11 @@ router.get("/:id", async (req, res, next) => {
 
 router.get("/:id/figures", async (req, res, next) => {
   try {
-    const minis = await FigureDAO.getFiguresBymanufacturerIdWithThumbnails(
-      req.params.id
+    const results = await FigureDAO.getFiguresBymanufacturerId(
+      req.params.id,
+      req.query
     );
-    res.json(minis);
+    res.json(results);
   } catch (e) {
     next(e);
   }
