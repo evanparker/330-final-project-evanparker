@@ -70,7 +70,7 @@ describe("/figures", () => {
       it("should return 200 and all figures", async () => {
         const res = await request(server).get("/figures/").send();
         expect(res.statusCode).toEqual(200);
-        res.body.forEach((figure, i) => {
+        res.body.docs.forEach((figure, i) => {
           expect(figure).toMatchObject(figures[i]);
         });
       });
@@ -160,7 +160,7 @@ describe("/figures", () => {
           .get(`/figures/${figure._id}/minis`)
           .send();
         expect(res1.statusCode).toEqual(200);
-        res1.body.forEach((mini, i) => {
+        res1.body.docs.forEach((mini, i) => {
           expect(mini).toMatchObject({
             _id: minis[i]._id.toString(),
             name: minis[i].name,
@@ -193,18 +193,18 @@ describe("/figures", () => {
 
       it("should return 200 for a valid search", async () => {
         const res1 = await request(server)
-          .get(`/figures/search?query=IMEF`)
+          .get(`/figures/search?search=IMEF`)
           .send();
         expect(res1.statusCode).toEqual(200);
-        expect(res1.body[0]).toMatchObject({
+        expect(res1.body.docs[0]).toMatchObject({
           name: "Sarah Blitzer, IMEF Sniper"
         });
 
         const res2 = await request(server)
-          .get(`/figures/search?query=gnome`)
+          .get(`/figures/search?search=gnome`)
           .send();
         expect(res2.statusCode).toEqual(200);
-        expect(res2.body[0]).toMatchObject({
+        expect(res2.body.docs[0]).toMatchObject({
           name: "Stub, Gnome Accountant"
         });
       });

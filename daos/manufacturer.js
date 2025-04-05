@@ -3,11 +3,27 @@ const Manufacturer = require("../models/manufacturer");
 
 module.exports = {};
 
-module.exports.getAllManufacturers = async () => {
-  // todo: pagination
-  return await Manufacturer.find()
-    .lean()
-    .populate({ path: "thumbnail", lean: true });
+const getManufacturers = async (
+  dbQuery = {},
+  queryParams = {},
+  options = {}
+) => {
+  const limit = queryParams.limit === undefined ? 20 : queryParams.limit;
+  const offset = queryParams.offset === undefined ? 0 : queryParams.offset;
+
+  const result = Manufacturer.paginate(dbQuery, {
+    populate: "thumbnail",
+    lean: true,
+    offset,
+    limit,
+    ...options
+  });
+
+  return result;
+};
+
+module.exports.getAllManufacturers = async (queryParams) => {
+  return getManufacturers({}, queryParams);
 };
 
 module.exports.getManufacturerById = async (id) => {
@@ -17,14 +33,12 @@ module.exports.getManufacturerById = async (id) => {
   return manufacturer;
 };
 
-module.exports.getManufacturersBySearch = async (query) => {
-  const manufacturers = await Manufacturer.find({
-    name: { $regex: query, $options: "i" }
-  })
-    .lean()
-    .sort({ name: 1 })
-    .limit(20);
-  return manufacturers;
+module.exports.getManufacturersBySearch = async (queryParams) => {
+  return getManufacturers(
+    { name: { $regex: queryParams.search, $options: "i" } },
+    queryParams,
+    { sort: { name: 1 } }
+  );
 };
 
 module.exports.createManufacturer = async (obj) => {

@@ -8,7 +8,7 @@ const { isLoggedIn, isAdmin } = require("./middleware");
 
 router.get("/", async (req, res, next) => {
   try {
-    const figures = await FigureDAO.getAllFigures();
+    const figures = await FigureDAO.getAllFigures(req.query);
     res.json(figures);
   } catch (e) {
     next(e);
@@ -17,7 +17,7 @@ router.get("/", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
   try {
-    const figures = await FigureDAO.getFiguresBySearch(req.query.query);
+    const figures = await FigureDAO.getFiguresBySearch(req.query);
     res.json(figures);
   } catch (e) {
     next(e);
@@ -35,8 +35,8 @@ router.get("/:id", async (req, res, next) => {
 
 router.get("/:id/minis", async (req, res, next) => {
   try {
-    const minis = await MiniDAO.getMinisByFigureIdWithThumbnails(req.params.id);
-    res.json(minis);
+    const result = await MiniDAO.getMinisByFigureId(req.params.id, req.query);
+    res.json(result);
   } catch (e) {
     next(e);
   }

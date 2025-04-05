@@ -60,7 +60,7 @@ describe("/manufacturers", () => {
       it("should return 200 and all manufacturers", async () => {
         const res = await request(server).get("/manufacturers/").send();
         expect(res.statusCode).toEqual(200);
-        res.body.forEach((manufacturer, i) => {
+        res.body.docs.forEach((manufacturer, i) => {
           expect(manufacturer).toMatchObject(manufacturers[i]);
         });
       });
@@ -120,10 +120,10 @@ describe("/manufacturers", () => {
   describe("After Login", () => {
     const invite0 = {
       code: "code0"
-    }
+    };
     const invite1 = {
       code: "code1"
-    }
+    };
     const user0 = {
       email: "user0@mail.com",
       username: "user0",
@@ -141,11 +141,15 @@ describe("/manufacturers", () => {
     beforeEach(async () => {
       await Invite.create(invite0);
       await Invite.create(invite1);
-      await request(server).post("/auth/signup").send({...user0, invite: invite0.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user0, invite: invite0.code });
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       userId0 = res0.body.userId;
-      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user1, invite: invite1.code });
       await User.updateOne(
         { email: user1.email },
         { $push: { roles: "admin" } }

@@ -7,13 +7,8 @@ const { isLoggedIn } = require("./middleware");
 
 router.get("/", async (req, res, next) => {
   try {
-    let minis;
-    if (req.query.thumbnails) {
-      minis = await MiniDAO.getAllMinisWithThumnbnail();
-    } else {
-      minis = await MiniDAO.getAllMinis();
-    }
-    res.json(minis);
+    const result = await MiniDAO.getAllMinis(req.query);
+    res.json(result);
   } catch (e) {
     next(e);
   }
