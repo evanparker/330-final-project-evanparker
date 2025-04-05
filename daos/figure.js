@@ -12,6 +12,7 @@ const getFigures = async (dbQuery = {}, queryParams = {}, options = {}) => {
     lean: true,
     offset,
     limit,
+    sort: { createdAt: -1 },
     ...options
   });
 

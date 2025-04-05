@@ -16,6 +16,7 @@ const getManufacturers = async (
     lean: true,
     offset,
     limit,
+    sort: { createdAt: -1 },
     ...options
   });
 
