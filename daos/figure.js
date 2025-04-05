@@ -32,7 +32,12 @@ module.exports.getFigureById = async (id) => {
 
 module.exports.getFiguresBySearch = async (queryParams = {}) => {
   return getFigures(
-    { name: { $regex: queryParams.search, $options: "i" } },
+    {
+      $or: [
+        { name: { $regex: queryParams.search, $options: "i" } },
+        { partNumber: { $regex: queryParams.search, $options: "i" } }
+      ]
+    },
     queryParams,
     { sort: { name: 1 } }
   );

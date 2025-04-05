@@ -13,7 +13,12 @@ const userSchema = new mongoose.Schema({
       service: { type: String },
       link: { type: String }
     }
-  ]
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    index: true
+  }
 });
 
 module.exports = mongoose.model("users", userSchema);

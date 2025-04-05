@@ -12,10 +12,15 @@ const figureSchema = new mongoose.Schema({
   description: { type: String },
   website: { type: String },
   partNumber: { type: String },
-  artist: { type: String }
+  artist: { type: String },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    index: true
+  }
 });
 
-figureSchema.index({ name: "text", partNumber: "text" });
+figureSchema.index({ name: 1, partNumber: 1 });
 
 figureSchema.plugin(mongoosePaginate);
 
