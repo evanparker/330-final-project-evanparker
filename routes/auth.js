@@ -3,15 +3,18 @@ const router = Router();
 const UserDAO = require("../daos/user");
 const TokenDAO = require("../daos/token");
 const InviteDAO = require("../daos/invite");
+const PasswordTokenDAO = require("../daos/passwordToken");
 const bcrypt = require("bcrypt");
 const { isLoggedIn } = require("./middleware");
+
+const bcryptSalt = Number(process.env.BCRYPT_SALT);
 
 router.post("/signup", async (req, res, next) => {
   try {
     let { password, email, username, invite } = req.body;
     const inviteObj = await InviteDAO.getInviteByCode(invite);
     if (password && email && username && inviteObj) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, bcryptSalt);
       const user = await UserDAO.createUser({
         password: hashedPassword,
         email,
@@ -65,12 +68,35 @@ router.put("/password", isLoggedIn, async (req, res, next) => {
       res.json();
       return;
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, bcryptSalt);
     const updatedUser = await UserDAO.updateUserPassword(
       userId,
       hashedPassword
     );
     res.json(updatedUser);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post("/resetpassword", async (req, res, next) => {
+  try {
+    const resetPasswordService = await PasswordTokenDAO.resetPassword(
+      req.body.userId,
+      req.body.token,
+      req.body.password
+    );
+    return res.json(resetPasswordService);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post("/forgotpassword", async (req, res, next) => {
+  try {
+    const requestPasswordResetService =
+      await PasswordTokenDAO.makePasswordTokenForUserEmail(req.body.email);
+    return res.json(requestPasswordResetService);
   } catch (e) {
     next(e);
   }

@@ -1,10 +1,10 @@
 const server = require("./server");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 const port = process.env.PORT || 3001;
 const mongoURL =
-  process.env.MONGO_CONNECTION_STRING ||
-  "mongodb://127.0.0.1/every-mini-painted-cloudinary";
+  process.env.DB_URL || "mongodb://127.0.0.1/every-mini-painted-cloudinary";
 
 mongoose.connect(mongoURL, {}).then(() => {
   server.listen(port, "0.0.0.0", () => {
