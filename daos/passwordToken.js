@@ -19,8 +19,7 @@ module.exports.makePasswordTokenForUserEmail = async (email) => {
 
   await new PasswordToken({
     userId: user._id,
-    token: hash,
-    createdAt: Date.now()
+    token: hash
   }).save();
 
   const link = `${clientURL}/passwordreset?token=${resetToken}&id=${user._id}`;

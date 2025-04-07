@@ -153,6 +153,7 @@ describe("/figures", () => {
           figure: figure._id,
           images: [images[0]._id, images[1]._id]
         });
+        minis.reverse();
       });
 
       it("should return 200 for valid figure id", async () => {

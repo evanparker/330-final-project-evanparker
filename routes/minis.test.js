@@ -249,6 +249,7 @@ describe("/minis", () => {
           .set("Authorization", "Bearer " + adminToken)
           .send({ images: [images[0]].map((i) => i._id) });
         minis.push(res1.body);
+        minis.reverse();
       });
 
       it("should return 200 and all minis", async () => {
