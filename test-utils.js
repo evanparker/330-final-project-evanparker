@@ -6,7 +6,8 @@ const models = [
   require("./models/mini"),
   require("./models/manufacturer"),
   require("./models/figure"),
-  require("./models/invite")
+  require("./models/invite"),
+  require("./models/passwordToken")
 ];
 
 module.exports = {};

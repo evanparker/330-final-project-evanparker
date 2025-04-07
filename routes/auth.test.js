@@ -5,6 +5,14 @@ const testUtils = require("../test-utils");
 
 const User = require("../models/user");
 const Invite = require("../models/invite");
+const PasswordToken = require("../models/passwordToken");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
+
+const sendEmail = require("../utils/email/sendEmail");
+jest.mock("../utils/email/sendEmail");
+
+const bcryptSalt = Number(process.env.BCRYPT_SALT);
 
 describe("/auth", () => {
   beforeAll(testUtils.connectDB);
@@ -21,12 +29,12 @@ describe("/auth", () => {
   const user0 = {
     email: "user0@mail.com",
     username: "user0",
-    password: "123password",
+    password: "123password"
   };
   const user1 = {
     email: "user1@mail.com",
     username: "user1",
-    password: "456password",
+    password: "456password"
   };
 
   describe("before signup", () => {
@@ -44,6 +52,15 @@ describe("/auth", () => {
       });
     });
 
+    describe("POST /forgotpassword", () => {
+      it("should return a 404", async () => {
+        const res = await request(server)
+          .post("/auth/forgotpassword")
+          .send(user0);
+        expect(res.statusCode).toEqual(404);
+      });
+    });
+
     describe("POST /logout", () => {
       it("should return 401", async () => {
         const res = await request(server).post("/auth/logout").send();
@@ -54,7 +71,7 @@ describe("/auth", () => {
 
   describe("signup", () => {
     describe("POST /signup", () => {
-      beforeEach(async ()=> {
+      beforeEach(async () => {
         await Invite.create(invite);
         await Invite.create(invite1);
       });
@@ -89,7 +106,9 @@ describe("/auth", () => {
         expect(res.statusCode).toEqual(400);
       });
       it("should return 200 with a password", async () => {
-        const res = await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+        const res = await request(server)
+          .post("/auth/signup")
+          .send({ ...user1, invite: invite1.code });
         expect(res.statusCode).toEqual(200);
         expect(res.body).toMatchObject({
           email: "user1@mail.com",
@@ -97,13 +116,19 @@ describe("/auth", () => {
         });
       });
       it("should return 409 Conflict with a repeat signup", async () => {
-        let res = await request(server).post("/auth/signup").send({...user0, invite: invite.code});
+        let res = await request(server)
+          .post("/auth/signup")
+          .send({ ...user0, invite: invite.code });
         expect(res.statusCode).toEqual(200);
-        res = await request(server).post("/auth/signup").send({...user0, invite: invite1.code});
+        res = await request(server)
+          .post("/auth/signup")
+          .send({ ...user0, invite: invite1.code });
         expect(res.statusCode).toEqual(409);
       });
       it("should not store raw password", async () => {
-        await request(server).post("/auth/signup").send({...user0, invite: invite.code});
+        await request(server)
+          .post("/auth/signup")
+          .send({ ...user0, invite: invite.code });
         const users = await User.find().lean();
         users.forEach((user) => {
           expect(Object.values(user)).not.toContain(user0.password);
@@ -113,11 +138,17 @@ describe("/auth", () => {
     });
   });
   describe.each([user0, user1])("User %# after signup", (user) => {
+    let userObject;
     beforeEach(async () => {
       await Invite.create(invite);
-      await request(server).post("/auth/signup").send({...user0, invite: invite.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user0, invite: invite.code });
       await Invite.create(invite1);
-      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user1, invite: invite1.code });
+      userObject = await User.findOne({ email: user.email });
     });
 
     describe("POST /", () => {
@@ -148,17 +179,74 @@ describe("/auth", () => {
         });
       });
     });
+
+    describe("POST /forgotpassword", () => {
+      it("should return a 200 for a valid email", async () => {
+        const res = await request(server)
+          .post("/auth/forgotpassword")
+          .send({ email: user.email });
+        expect(res.statusCode).toEqual(200);
+        expect(sendEmail).toHaveBeenCalled();
+      });
+    });
+
+    describe("POST /resetpassword", () => {
+      let resetToken = crypto.randomBytes(32).toString("hex");
+      let hash;
+      let passwordToken0;
+      beforeEach(async () => {
+        hash = await bcrypt.hash(resetToken, Number(bcryptSalt));
+        passwordToken0 = await PasswordToken.create({
+          token: hash,
+          userId: userObject._id.toString()
+        });
+      });
+      it("should return a 404 for missing userId or token", async () => {
+        const res = await request(server).post("/auth/resetpassword").send({
+          userId: userObject._id.toString(),
+          token: "aaaa",
+          password: "newpassword"
+        });
+        expect(res.statusCode).toEqual(404);
+        const res1 = await request(server).post("/auth/resetpassword").send({
+          userId: "aaaa",
+          token: resetToken,
+          password: "newpassword"
+        });
+        expect(res1.statusCode).toEqual(404);
+      });
+      it("should return a 200 for valid userId or token", async () => {
+        const res = await request(server).post("/auth/resetpassword").send({
+          userId: userObject._id.toString(),
+          token: resetToken,
+          password: "newpassword"
+        });
+        expect(res.statusCode).toEqual(200);
+        expect(sendEmail).toHaveBeenCalled();
+        const resultingUser = await User.findOne({ email: userObject.email });
+        const isValid = await bcrypt.compare(
+          "newpassword",
+          resultingUser.password
+        );
+        expect(isValid).toBe(true);
+      });
+    });
   });
+
   describe("After both users login", () => {
     let token0;
     let token1;
     beforeEach(async () => {
       await Invite.create(invite);
-      await request(server).post("/auth/signup").send({...user0, invite: invite.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user0, invite: invite.code });
       const res0 = await request(server).post("/auth/login").send(user0);
       token0 = res0.body.token;
       await Invite.create(invite1);
-      await request(server).post("/auth/signup").send({...user1, invite: invite1.code});
+      await request(server)
+        .post("/auth/signup")
+        .send({ ...user1, invite: invite1.code });
       const res1 = await request(server).post("/auth/login").send(user1);
       token1 = res1.body.token;
     });
