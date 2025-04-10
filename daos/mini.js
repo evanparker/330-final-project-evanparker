@@ -23,6 +23,14 @@ module.exports.getAllMinis = async (queryParams = {}) => {
   return getMinis({}, queryParams);
 };
 
+module.exports.getMinisBySearch = async (queryParams) => {
+  return getMinis(
+    { name: { $regex: queryParams.search, $options: "i" } },
+    queryParams,
+    { sort: { name: 1 } }
+  );
+};
+
 module.exports.getMiniById = async (id) => {
   let mini = await Mini.findById(id)
     .lean()

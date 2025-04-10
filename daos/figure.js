@@ -59,6 +59,12 @@ module.exports.updateFigure = async (id, obj) => {
   return await Figure.updateOne({ _id: id }, obj, { new: true });
 };
 
+module.exports.findAndUpdateFigure = async (filter, obj) => {
+  return await Figure.findOneAndUpdate(filter, obj, {
+    new: true
+  });
+};
+
 module.exports.upsertFigure = async (filter, obj) => {
   return await Figure.findOneAndUpdate(filter, obj, {
     new: true,

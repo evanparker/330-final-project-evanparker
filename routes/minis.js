@@ -14,6 +14,15 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/search", async (req, res, next) => {
+  try {
+    const results = await MiniDAO.getMinisBySearch(req.query);
+    res.json(results);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:id", async (req, res, next) => {
   try {
     const mini = await MiniDAO.getMiniById(req.params.id);
