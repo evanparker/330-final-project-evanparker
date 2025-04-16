@@ -6,7 +6,11 @@ const imageSchema = new mongoose.Schema({
     ref: "users",
     required: true
   },
-  cloudinaryPublicId: { type: String, required: true },
+  type: { type: String, default: "urlImage" }, // urlImage, s3Image, or cloudinaryImage
+  cloudinaryPublicId: { type: String },
+  url: { type: String },
+  s3Bucket: { type: String },
+  s3Key: { type: String },
   createdAt: {
     type: Date,
     default: Date.now,

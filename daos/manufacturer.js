@@ -30,7 +30,8 @@ module.exports.getAllManufacturers = async (queryParams) => {
 module.exports.getManufacturerById = async (id) => {
   const manufacturer = await Manufacturer.findById(id)
     .lean()
-    .populate({ path: "images", lean: true });
+    .populate({ path: "images", lean: true })
+    .populate({ path: "thumbnail", lean: true });
   return manufacturer;
 };
 

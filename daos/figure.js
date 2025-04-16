@@ -27,7 +27,8 @@ module.exports.getFigureById = async (id) => {
   const figure = await Figure.findById(id)
     .lean()
     .populate({ path: "manufacturer", lean: true })
-    .populate({ path: "images", lean: true });
+    .populate({ path: "images", lean: true })
+    .populate({ path: "thumbnail", lean: true });
   return figure;
 };
 
