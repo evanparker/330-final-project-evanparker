@@ -36,16 +36,6 @@ router.post("/", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// router.post("/", isLoggedIn, async (req, res, next) => {
-//   try {
-//     const imageObj = { ...req.body, userId: req.userId };
-//     const image = await ImageDAO.createImage(imageObj);
-//     res.json(image);
-//   } catch (e) {
-//     next(e);
-//   }
-// });
-
 router.get("/", async (req, res, next) => {
   try {
     const images = await ImageDAO.getAllImages();
