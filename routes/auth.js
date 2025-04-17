@@ -13,7 +13,11 @@ router.post("/signup", async (req, res, next) => {
   try {
     let { password, email, username, invite } = req.body;
     const inviteObj = await InviteDAO.getInviteByCode(invite);
-    if (password && email && username && inviteObj) {
+    if (!inviteObj) {
+      res.status(400).send({ message: "Missing or invalid invite code" });
+      return;
+    }
+    if (password && email && username) {
       const hashedPassword = await bcrypt.hash(password, bcryptSalt);
       const user = await UserDAO.createUser({
         password: hashedPassword,
@@ -27,6 +31,15 @@ router.post("/signup", async (req, res, next) => {
       res.sendStatus(400);
     }
   } catch (e) {
+    if (e.message.includes("duplicate key error collection")) {
+      if (e.message.includes("key: { email:")) {
+        res.status(409).send({ message: "Email already in use" });
+        return;
+      } else if (e.message.includes("key: { username:")) {
+        res.status(409).send({ message: "Username already in use" });
+        return;
+      }
+    }
     next(e);
   }
 });
@@ -35,14 +48,12 @@ router.post("/login", async (req, res, next) => {
   try {
     let { password, email } = req.body;
     if (!password) {
-      res.status(400);
-      res.json();
+      res.status(400).json({ message: "Missing password" });
       return;
     }
     const user = await UserDAO.findUserByEmail(email);
     if (!user) {
-      res.status(401);
-      res.json();
+      res.status(401).json({ message: "Invalid email or password" });
       return;
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -50,8 +61,7 @@ router.post("/login", async (req, res, next) => {
       const token = await TokenDAO.makeTokenForUserId(user._id);
       res.json(token);
     } else {
-      res.status(401);
-      res.json();
+      res.status(401).json({ message: "Invalid email or password" });
       return;
     }
   } catch (e) {
