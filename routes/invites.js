@@ -17,7 +17,7 @@ router.get("/:code", async (req, res, next) => {
   try {
     const invite = await InviteDAO.getInviteByCode(req.params.code);
     if (!invite) {
-      res.sendStatus(404);
+      res.status(404).json({ message: "Invite code not found" });
       return;
     }
     res.json(invite);
@@ -30,7 +30,7 @@ router.delete("/:code", isLoggedIn, isAdmin, async (req, res, next) => {
   try {
     const invite = await InviteDAO.deleteInvite(req.params.code);
     if (!invite) {
-      res.sendStatus(404);
+      res.status(404).json({ message: "Invite code not found" });
       return;
     }
     res.json(invite);

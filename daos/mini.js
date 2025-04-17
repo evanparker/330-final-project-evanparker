@@ -40,7 +40,8 @@ module.exports.getMiniById = async (id) => {
       lean: true,
       populate: { path: "avatar", lean: true }
     })
-    .populate({ path: "images", lean: true });
+    .populate({ path: "images", lean: true })
+    .populate({ path: "thumbnail", lean: true });
   return mini;
 };
 

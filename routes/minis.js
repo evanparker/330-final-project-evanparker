@@ -28,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
     const mini = await MiniDAO.getMiniById(req.params.id);
 
     if (!mini) {
-      res.sendStatus(404);
+      res.status(404).json({ message: "Mini not found" });
       return;
     }
 
@@ -43,7 +43,7 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     const imageIds = req.body.images;
     const images = await ImageDAO.getImagesByIds(imageIds);
     if (images.length !== imageIds.length) {
-      res.sendStatus(400);
+      res.status(400).json({ message: "Linked images not found" });
       return;
     }
 
