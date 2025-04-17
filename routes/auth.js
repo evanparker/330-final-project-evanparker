@@ -112,7 +112,7 @@ router.post("/forgotpassword", async (req, res, next) => {
       await PasswordTokenDAO.makePasswordTokenForUserEmail(req.body.email);
     return res.json(requestPasswordResetService);
   } catch (e) {
-    if (e.message.includes("User does not exist")) {
+    if (e.message.includes("Email not registered")) {
       res.status(404).send({ message: e.message });
       return;
     }
