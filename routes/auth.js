@@ -99,7 +99,7 @@ router.post("/resetpassword", async (req, res, next) => {
     return res.json(resetPasswordService);
   } catch (e) {
     if (e.message.includes("Invalid or expired password reset token")) {
-      res.status(404).send(e.message);
+      res.status(404).send({ message: e.message });
       return;
     }
     next(e);
@@ -113,7 +113,7 @@ router.post("/forgotpassword", async (req, res, next) => {
     return res.json(requestPasswordResetService);
   } catch (e) {
     if (e.message.includes("User does not exist")) {
-      res.status(404).send(e.message);
+      res.status(404).send({ message: e.message });
       return;
     }
     next(e);
