@@ -32,6 +32,25 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.put("/me/setfavorite/", isLoggedIn, async (req, res, next) => {
+  try {
+    let user;
+    if (req.body.value) {
+      user = await UserDAO.addFavorite(req.userId, req.body.id);
+    } else {
+      user = await UserDAO.removeFavorite(req.userId, req.body.id);
+    }
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    delete user.password;
+    res.json(user);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:username", async (req, res, next) => {
   try {
     let user = await UserDAO.findUserByUsername(req.params.username);

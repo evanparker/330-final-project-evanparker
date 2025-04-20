@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
       link: { type: String }
     }
   ],
+  favorites: {
+    type: Map,
+    of: mongoose.Schema.Types.ObjectId,
+    ref: "minis",
+    default: {}
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -44,3 +50,18 @@ const userSchema = new mongoose.Schema({
 // });
 
 module.exports = mongoose.model("users", userSchema);
+
+// Example of a Map referencing multiple collections:
+// https://github.com/Automattic/mongoose/issues/10584
+// favorites: {
+//   type: Map,
+//   of: {
+//     modelId: String,
+//     data: [
+//       {
+//         _id: mongoose.Schema.Types.ObjectId,
+//         ref: (doc) => doc.parent().modelId
+//       }
+//     ]
+//   }
+// },

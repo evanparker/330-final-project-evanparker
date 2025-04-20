@@ -36,3 +36,14 @@ module.exports.updateUser = async (userId, userObj) => {
   delete userObj.password;
   return await User.findOneAndUpdate({ _id: userId }, userObj, { new: true });
 };
+
+module.exports.addFavorite = async (userId, _id) => {
+  const user = await User.findOne({ _id: userId });
+  user.favorites.set(_id, _id);
+  return await user.save();
+};
+module.exports.removeFavorite = async (userId, _id) => {
+  const user = await User.findOne({ _id: userId });
+  user.favorites.set(_id, null);
+  return await user.save();
+};
