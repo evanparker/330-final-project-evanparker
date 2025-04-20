@@ -12,6 +12,7 @@ const miniSchema = new mongoose.Schema({
   thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: "images" },
   figure: { type: mongoose.Schema.Types.ObjectId, ref: "figures" },
   description: { type: String },
+  favorites: { type: Number, default: 0 },
   createdAt: {
     type: Date,
     default: Date.now,

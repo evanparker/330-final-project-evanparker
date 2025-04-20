@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Mini = require("../models/mini");
 
 module.exports = {};
 
@@ -40,10 +41,12 @@ module.exports.updateUser = async (userId, userObj) => {
 module.exports.addFavorite = async (userId, _id) => {
   const user = await User.findOne({ _id: userId });
   user.favorites.set(_id, _id);
+  await Mini.findByIdAndUpdate(_id, { $inc: { favorites: 1 } });
   return await user.save();
 };
 module.exports.removeFavorite = async (userId, _id) => {
   const user = await User.findOne({ _id: userId });
   user.favorites.set(_id, null);
+  await Mini.findByIdAndUpdate(_id, { $inc: { favorites: -1 } });
   return await user.save();
 };

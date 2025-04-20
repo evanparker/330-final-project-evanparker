@@ -6,11 +6,11 @@ module.exports = {
    */
   async up(db, client) {
     // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-    return db.collection("figures").updateMany(
+    return db.collection("minis").updateMany(
       {},
       {
         $set: {
-          artist: ""
+          favorites: 0
         }
       }
     );
@@ -22,11 +22,11 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async down(db, client) {
-    return db.collection("figures").updateMany(
+    return db.collection("minis").updateMany(
       {},
       {
         $unset: {
-          artist: null
+          favorites: null
         }
       }
     );

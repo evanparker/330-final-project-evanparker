@@ -22,7 +22,6 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async down(db, client) {
-    // Example:
     return db.collection("users").updateMany(
       {},
       {
