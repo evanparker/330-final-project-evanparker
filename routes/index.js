@@ -15,7 +15,10 @@ router.use(function (err, req, res, next) {
     res.json({ message: err.message });
     return;
   }
-  if (err.message.includes("duplicate key error collection")) {
+  if (
+    err.message.includes("duplicate key error collection") ||
+    err.message.includes("must be unique")
+  ) {
     res.status(409);
     res.json({ message: err.message });
     return;

@@ -1,18 +1,46 @@
 const mongoose = require("mongoose");
+const reservedNames = require("../utils/reservedNames");
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
     index: true,
-    unique: true,
-    trim: true
+    unique: [true, "Username already in use"],
+    immutable: true,
+    trim: true,
+    validate: [
+      {
+        validator: (val) => {
+          return !reservedNames.includes(val);
+        },
+        message: "Username already in use"
+      },
+      {
+        validator: (val) => {
+          return val.length >= 3 && val.length <= 30;
+        },
+        message: "Username must be between 3 and 30 characters"
+      },
+      {
+        validator: /^[a-z0-9-_]+$/,
+        message:
+          "Username must consist of only lowercase characters, numbers, dashes, and underscores"
+      }
+    ]
   },
   email: {
     type: String,
     required: true,
     index: true,
-    unique: true,
+    unique: [true, "Email must be unique"],
+    immutable: true,
+    validate: [
+      {
+        validator: /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/,
+        message: "Must be a valid email address"
+      }
+    ],
     trim: true
   },
   password: { type: String, required: true },
@@ -39,6 +67,8 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+module.exports = mongoose.model("users", userSchema);
+
 // userSchema.pre("save", async function (next) {
 //   const bcryptSalt = Number(process.env.BCRYPT_SALT);
 //   if (!this.isModified("password")) {
@@ -48,8 +78,6 @@ const userSchema = new mongoose.Schema({
 //   this.password = hash;
 //   next();
 // });
-
-module.exports = mongoose.model("users", userSchema);
 
 // Example of a Map referencing multiple collections:
 // https://github.com/Automattic/mongoose/issues/10584

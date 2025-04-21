@@ -15,14 +15,14 @@ describe("/users", () => {
   afterEach(testUtils.clearDB);
 
   const userNormal = {
-    email: "userNormal@mail.com",
-    username: "userNormal",
+    email: "user-normal@mail.com",
+    username: "user-normal",
     password: "999password",
     roles: ["user"]
   };
   const userOther = {
-    email: "userOther@mail.com",
-    username: "userOther",
+    email: "user-other@mail.com",
+    username: "user-other",
     password: "777password",
     roles: ["user"]
   };
@@ -115,13 +115,13 @@ describe("/users", () => {
       code: "code1"
     };
     const userA = {
-      email: "userA@mail.com",
-      username: "userA",
+      email: "user-a@mail.com",
+      username: "user-a",
       password: "123password"
     };
     const userB = {
-      email: "userB@mail.com",
-      username: "userB",
+      email: "user-b@mail.com",
+      username: "user-b",
       password: "456password"
     };
     let tokenA;
@@ -170,19 +170,19 @@ describe("/users", () => {
         const res = await request(server)
           .put("/users/6760251aa5945e92fb1f3629")
           .set("Authorization", "Bearer " + tokenA)
-          .send({ name: "new name" });
+          .send({ description: "new-name" });
         expect(res.statusCode).toEqual(404);
         const res1 = await request(server)
           .put("/users/invalid_id")
           .set("Authorization", "Bearer " + tokenA)
-          .send({ name: "new name" });
+          .send({ description: "new-name" });
         expect(res1.statusCode).toEqual(404);
       });
       it("should send 401 if editing user does not match and isn't an admin", async () => {
         const res = await request(server)
           .put(`/users/${userIdB}`)
           .set("Authorization", "Bearer " + tokenA)
-          .send({ name: "new name" });
+          .send({ description: "new-name" });
         expect(res.statusCode).toEqual(401);
       });
       it("should send 200 on successful edit", async () => {
@@ -190,25 +190,25 @@ describe("/users", () => {
         const res = await request(server)
           .put(`/users/${userIdA}`)
           .set("Authorization", "Bearer " + tokenA)
-          .send({ username: "new name" });
+          .send({ description: "new-name" });
         expect(res.statusCode).toEqual(200);
         const updatedUserA = await User.findOne({ email: userA.email }).lean();
-        expect(updatedUserA.username).toEqual("new name");
+        expect(updatedUserA.description).toEqual("new-name");
 
         // As admin
         const res1 = await request(server)
           .put(`/users/${userIdA}`)
           .set("Authorization", "Bearer " + tokenB)
-          .send({ username: "new name2" });
+          .send({ description: "new-name2" });
         expect(res1.statusCode).toEqual(200);
         const updatedUserA2 = await User.findOne({ email: userA.email }).lean();
-        expect(updatedUserA2.username).toEqual("new name2");
+        expect(updatedUserA2.description).toEqual("new-name2");
       });
       it("should not be able to edit password", async () => {
         const res = await request(server)
           .put(`/users/${userIdA}`)
           .set("Authorization", "Bearer " + tokenA)
-          .send({ username: "new name", password: "newPassword" });
+          .send({ description: "new-name", password: "newPassword" });
         expect(res.statusCode).toEqual(200);
         const updatedUserA = await User.findOne({ email: userA.email }).lean();
         expect(updatedUserA.password).not.toEqual("newPassword");
@@ -235,7 +235,7 @@ describe("/users", () => {
         const res = await request(server)
           .put(`/users/${userIdA}`)
           .set("Authorization", "Bearer " + tokenA)
-          .send({ username: "new name" });
+          .send({ description: "new-name" });
         expect(res.statusCode).toEqual(200);
         expect(res.body.password).toBeUndefined();
       });

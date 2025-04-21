@@ -17,8 +17,8 @@ describe("/figures", () => {
   afterEach(testUtils.clearDB);
 
   const userNormal = {
-    email: "userNormal@mail.com",
-    username: "userNormal",
+    email: "user-normal@mail.com",
+    username: "user-normal",
     password: "999password"
   };
 
