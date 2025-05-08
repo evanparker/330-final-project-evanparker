@@ -60,6 +60,7 @@ const userSchema = new mongoose.Schema({
     ref: "minis",
     default: {}
   },
+  violations: { type: Number, default: 0 },
   createdAt: {
     type: Date,
     default: Date.now,

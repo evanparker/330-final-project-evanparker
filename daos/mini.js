@@ -7,14 +7,17 @@ const getMinis = async (dbQuery = {}, queryParams = {}, options = {}) => {
   const limit = queryParams.limit === undefined ? 20 : queryParams.limit;
   const offset = queryParams.offset === undefined ? 0 : queryParams.offset;
 
-  const result = Mini.paginate(dbQuery, {
-    populate: "thumbnail",
-    lean: true,
-    offset,
-    limit,
-    sort: { createdAt: -1 },
-    ...options
-  });
+  const result = Mini.paginate(
+    { ...dbQuery, isDeleted: false },
+    {
+      populate: "thumbnail",
+      lean: true,
+      offset,
+      limit,
+      sort: { createdAt: -1 },
+      ...options
+    }
+  );
 
   return result;
 };
@@ -25,7 +28,7 @@ module.exports.getAllMinis = async (queryParams = {}) => {
 
 module.exports.getMinisBySearch = async (queryParams) => {
   return getMinis(
-    { name: { $regex: queryParams.search, $options: "i" } },
+    { name: { $regex: queryParams.search, $options: "i" }, isDeleted: false },
     queryParams,
     { sort: { name: 1 } }
   );
@@ -42,6 +45,7 @@ module.exports.getMiniById = async (id) => {
     })
     .populate({ path: "images", lean: true })
     .populate({ path: "thumbnail", lean: true });
+
   return mini;
 };
 
@@ -62,5 +66,5 @@ module.exports.updateMini = async (id, miniObj) => {
 };
 
 module.exports.deleteMini = async (id) => {
-  return await Mini.findOneAndDelete({ _id: id });
+  return await Mini.findOneAndUpdate({ _id: id }, { isDeleted: true });
 };

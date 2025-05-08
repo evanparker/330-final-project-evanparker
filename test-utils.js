@@ -7,7 +7,8 @@ const models = [
   require("./models/manufacturer"),
   require("./models/figure"),
   require("./models/invite"),
-  require("./models/passwordToken")
+  require("./models/passwordToken"),
+  require("./models/moderationReport")
 ];
 
 module.exports = {};
