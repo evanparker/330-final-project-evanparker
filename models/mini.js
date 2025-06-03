@@ -17,11 +17,25 @@ const miniSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
     index: true
-  }
+  },
+  blur: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false }
 });
 
 miniSchema.index({ name: 1 });
 
 miniSchema.plugin(mongoosePaginate);
+
+miniSchema.pre("find", function () {
+  if (!this.options.getDeleted) {
+    this.where({ isDeleted: false });
+  }
+});
+
+miniSchema.pre("findOne", function () {
+  if (!this.options.getDeleted) {
+    this.where({ isDeleted: false });
+  }
+});
 
 module.exports = mongoose.model("minis", miniSchema);

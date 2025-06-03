@@ -8,6 +8,7 @@ router.use("/minis", require("./minis"));
 router.use("/users/", require("./users"));
 router.use("/manufacturers/", require("./manufacturers"));
 router.use("/figures/", require("./figures"));
+router.use("/moderation-reports/", require("./moderationReports"));
 
 router.use(function (err, req, res, next) {
   if (err.message.includes("Cast to ObjectId failed for value")) {
