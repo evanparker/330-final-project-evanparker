@@ -6,16 +6,20 @@ const InviteDAO = require("../daos/invite");
 const PasswordTokenDAO = require("../daos/passwordToken");
 const bcrypt = require("bcrypt");
 const { isLoggedIn } = require("./middleware");
+const { config } = require("../utils/config");
 
 const bcryptSalt = Number(process.env.BCRYPT_SALT);
 
 router.post("/signup", async (req, res, next) => {
   try {
     let { password, email, username, invite } = req.body;
-    const inviteObj = await InviteDAO.getInviteByCode(invite);
-    if (!inviteObj) {
-      res.status(400).send({ message: "Missing or invalid invite code" });
-      return;
+
+    if (config.createUserRequiresInvite) {
+      const inviteObj = await InviteDAO.getInviteByCode(invite);
+      if (!inviteObj) {
+        res.status(400).send({ message: "Missing or invalid invite code" });
+        return;
+      }
     }
     if (password && email && username) {
       const hashedPassword = await bcrypt.hash(password, bcryptSalt);

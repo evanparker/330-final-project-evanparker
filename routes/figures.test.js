@@ -10,6 +10,18 @@ const Figure = require("../models/figure");
 const Invite = require("../models/invite");
 const Mini = require("../models/mini");
 
+// this breaks such that no values are loaded from the .env file...
+// still figuring out how to get it to replace values in tests.
+jest.mock("dotenv", () => ({
+  config: jest.fn(() => ({
+    parsed: {
+      EDIT_FIGURE_REQUIRES_ADMIN: "true",
+      EDIT_MANUFACTURER_REQUIRES_ADMIN: "true",
+      CREATE_USER_REQUIRES_INVITE: "true"
+    }
+  }))
+}));
+
 describe("/figures", () => {
   beforeAll(testUtils.connectDB);
   afterAll(testUtils.stopDB);
