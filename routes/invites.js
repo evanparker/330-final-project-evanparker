@@ -13,6 +13,15 @@ router.post("/", isLoggedIn, isAdmin, async (req, res, next) => {
   }
 });
 
+router.get("/", async (req, res, next) => {
+  try {
+    const invites = await InviteDAO.getAllInvites();
+    res.json(invites);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/:code", async (req, res, next) => {
   try {
     const invite = await InviteDAO.getInviteByCode(req.params.code);

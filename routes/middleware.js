@@ -36,3 +36,11 @@ module.exports.isAdmin = async (req, res, next) => {
     next(e);
   }
 };
+
+module.exports.skip = async (req, res, next) => {
+  try {
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
